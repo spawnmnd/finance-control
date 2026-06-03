@@ -3,201 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Finance Control - Completo</title>
+  <title>Finance Control</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; }
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #f5f5f0 0%, #fafaf8 100%);
-      color: #2a2a28;
-    }
-    
-    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .header h1 { font-size: 28px; }
-    .header p { color: #999; font-size: 13px; }
-    .header-info { text-align: right; }
-    
-    .btn-logout { 
-      background: #dc3545; 
-      color: white; 
-      border: none; 
-      padding: 8px 16px; 
-      border-radius: 6px; 
-      cursor: pointer; 
-      font-size: 12px;
-    }
-    .btn-logout:hover { background: #c82333; }
-    
-    .card { 
-      background: white; 
-      border-radius: 12px; 
-      padding: 24px; 
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      border: 1px solid #e5e5e0;
-    }
-    
-    .card h2 { font-size: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-    .card h3 { font-size: 14px; color: #999; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
-    
-    .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-    .stat { background: #f9f9f6; padding: 15px; border-radius: 8px; }
-    .stat-label { font-size: 11px; color: #999; text-transform: uppercase; margin-bottom: 5px; }
-    .stat-value { font-size: 20px; font-weight: bold; }
-    .stat-small { font-size: 14px; }
-    
-    .progress-bar { 
-      height: 8px; 
-      background: #e5e5e0; 
-      border-radius: 4px; 
-      overflow: hidden;
-      margin: 10px 0;
-    }
-    .progress-fill { 
-      height: 100%; 
-      background: #5c8c3a;
-      transition: width 0.3s;
-    }
-    
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; font-size: 12px; color: #999; margin-bottom: 5px; text-transform: uppercase; }
-    .form-group input, .form-group select { 
-      width: 100%; 
-      padding: 10px; 
-      border: 1px solid #e5e5e0; 
-      border-radius: 6px; 
-      font-size: 14px;
-    }
-    .form-group input:focus, .form-group select:focus { outline: none; border-color: #2a3b2a; }
-    
-    .input-group { display: flex; gap: 10px; }
-    .input-group input { flex: 1; }
-    .input-group button { width: auto; }
-    
-    button { 
-      padding: 10px 16px; 
-      background: #2a3b2a; 
-      color: white; 
-      border: none; 
-      border-radius: 6px; 
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 500;
-    }
-    button:hover { background: #1e2d24; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-    
-    .list-item { 
-      padding: 12px; 
-      background: #f9f9f6; 
-      border-radius: 6px; 
-      margin-bottom: 8px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center;
-    }
-    .list-item-value { color: #999; font-weight: 500; }
-    .list-item-delete { background: #dc3545; padding: 5px 10px; font-size: 11px; }
-    
-    .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #e5e5e0; }
-    .tab { 
-      padding: 12px 16px; 
-      background: none; 
-      border: none; 
-      border-bottom: 2px solid transparent;
-      cursor: pointer;
-      font-size: 13px;
-      color: #999;
-    }
-    .tab.active { 
-      color: #2a3b2a;
-      border-bottom-color: #2a3b2a;
-    }
-    
-    .hidden { display: none; }
-    .error { color: #d32f2f; font-size: 12px; padding: 10px; background: #ffebee; border-radius: 6px; margin-bottom: 15px; }
-    .success { color: #388e3c; font-size: 12px; padding: 10px; background: #e8f5e9; border-radius: 6px; margin-bottom: 15px; }
-    
-    .auth-screen { 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      min-height: 100vh;
-      background: linear-gradient(135deg, #2a3b2a 0%, #1e2d24 100%);
-    }
-    .auth-card { 
-      background: white; 
-      padding: 40px; 
-      border-radius: 12px; 
-      width: 100%; 
-      max-width: 400px;
-    }
-    .auth-card h1 { text-align: center; margin-bottom: 10px; }
-    .auth-card p { text-align: center; color: #999; margin-bottom: 30px; font-size: 13px; }
-    
-    .priority { padding: 4px 8px; border-radius: 4px; font-size: 11px; }
-    .priority.alta { background: #fbebe7; color: #9b2c2c; }
-    .priority.media { background: #fef3de; color: #b45309; }
-    .priority.baixa { background: #efeae0; color: #6b6358; }
-    
-    .note { 
-      font-size: 11px; 
-      color: #999; 
-      margin-top: 10px; 
-      padding: 10px; 
-      background: #f9f9f6; 
-      border-radius: 6px;
-    }
-    
-    @media (max-width: 600px) {
-      .dashboard { grid-template-columns: 1fr; }
-      .container { padding: 15px; }
-      .card { padding: 16px; }
-    }
+    .serif { font-family: Georgia, serif; }
+    .num { font-feature-settings: 'tnum' 1; letter-spacing: -0.02em; }
+    .grain { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E"); }
   </style>
 </head>
 <body>
   <div id="root"></div>
-
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
   <script type="text/babel">
-    const { useState, useEffect } = React;
+    const { useState, useEffect, useRef } = React;
+    const { Heart, PiggyBank, Plus, Trash2, Check, X, AlertCircle, Settings, TrendingUp,
+      Calendar, Sparkles, ChevronDown, ChevronUp, Pencil, ArrowRight, Coins, Receipt,
+      History, LineChart, Trophy, Target, LogOut } = lucide;
 
     const SUPABASE_URL = 'https://mazdohddohbbbirmidki.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_V7hqRt4Hm8YAlIYHfLyrGw_CtlfLhGi';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const formatBRL = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0);
-
+    // ====== AUTH WRAPPER ======
     function App() {
       const [user, setUser] = useState(null);
-      const [loading, setLoading] = useState(true);
+      const [authLoading, setAuthLoading] = useState(true);
       const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
       const [isSignUp, setIsSignUp] = useState(false);
-      const [error, setError] = useState('');
-      const [activeTab, setActiveTab] = useState('resumo');
-      
-      const [data, setData] = useState({
-        config: { salario: 3000, comissao: 0, metaRendaPassiva: 6000 },
-        contas: [],
-        emergencia: { meta: 6000, acumulado: 1300, metaMensal: 300 },
-        investimentos: { acumulado: 0 },
-        desejos: [],
-        mesAtual: { comissao: 0, aportes: { emergencia: 0, investimento: 0 } },
-        historico: []
-      });
+      const [authError, setAuthError] = useState('');
 
       useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
           setUser(session?.user || null);
-          setLoading(false);
+          setAuthLoading(false);
         });
         supabase.auth.onAuthStateChange((_event, session) => {
           setUser(session?.user || null);
@@ -205,390 +48,1577 @@
       }, []);
 
       const handleAuth = async () => {
-        setError('');
-        const { error: err } = isSignUp
+        setAuthError('');
+        const { error } = isSignUp
           ? await supabase.auth.signUp({ email, password })
           : await supabase.auth.signInWithPassword({ email, password });
-        if (err) setError(err.message);
+        if (error) setAuthError(error.message);
         else { setEmail(''); setPassword(''); }
       };
 
-      const handleLogout = async () => {
-        await supabase.auth.signOut();
-        setUser(null);
-      };
+      if (authLoading) return (
+        <div className="flex items-center justify-center h-screen" style={{background:'#F2EDE3'}}>
+          <p style={{color:'#6B6358'}}>Carregando...</p>
+        </div>
+      );
 
-      const updateData = (newData) => setData(newData);
-
-      const addConta = (nome) => {
-        const newConta = { id: Date.now(), nome, valor: 0, paga: false };
-        updateData({ ...data, contas: [...data.contas, newConta] });
-      };
-
-      const updateConta = (id, valor) => {
-        updateData({
-          ...data,
-          contas: data.contas.map(c => c.id === id ? { ...c, valor } : c)
-        });
-      };
-
-      const deleteConta = (id) => {
-        updateData({ ...data, contas: data.contas.filter(c => c.id !== id) });
-      };
-
-      const addDesejo = (nome, prioridade) => {
-        const newDesejo = { id: Date.now(), nome, prioridade, valor: 0, guardado: 0 };
-        updateData({ ...data, desejos: [...data.desejos, newDesejo] });
-      };
-
-      const deleteDesejo = (id) => {
-        updateData({ ...data, desejos: data.desejos.filter(d => d.id !== id) });
-      };
-
-      if (loading) return <div className="auth-screen"><div className="auth-card"><p>Carregando...</p></div></div>;
-
-      if (!user) {
-        return (
-          <div className="auth-screen">
-            <div className="auth-card">
-              <h1>💰 Finance Control</h1>
-              <p>Investimentos & Aposentadoria</p>
-              
-              {error && <div className="error">{error}</div>}
-              
-              <div className="form-group">
-                <label>Email</label>
-                <input type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-              </div>
-              
-              <div className="form-group">
-                <label>Senha</label>
-                <input type="password" placeholder="senha" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAuth()} />
-              </div>
-              
-              <button onClick={handleAuth} style={{width: '100%'}}>
-                {isSignUp ? 'Criar Conta' : 'Entrar'}
+      if (!user) return (
+        <div className="flex items-center justify-center min-h-screen" style={{background:'linear-gradient(135deg,#2A3B2A,#1E2D24)'}}>
+          <div className="w-full max-w-md p-8 rounded-2xl shadow-lg" style={{background:'#F2EDE3'}}>
+            <h1 className="serif text-3xl font-bold text-center mb-1" style={{color:'#1F1B16'}}>Finance Control</h1>
+            <p className="text-center text-sm mb-8" style={{color:'#9A8F7E'}}>Investimentos & Aposentadoria</p>
+            {authError && <div className="p-3 rounded-lg text-sm mb-4" style={{background:'#FBEBE7',color:'#9B2C2C'}}>{authError}</div>}
+            <div className="mb-4">
+              <label className="block text-xs uppercase tracking-wider mb-1" style={{color:'#6B6358'}}>Email</label>
+              <input type="email" value={email} onChange={e=>setEmail(e.target.value)}
+                className="w-full px-3 py-2.5 rounded-lg text-sm border"
+                style={{background:'#FAF5EA',border:'1px solid #E0D6C3',color:'#1F1B16'}}
+                placeholder="seu@email.com" />
+            </div>
+            <div className="mb-6">
+              <label className="block text-xs uppercase tracking-wider mb-1" style={{color:'#6B6358'}}>Senha</label>
+              <input type="password" value={password} onChange={e=>setPassword(e.target.value)}
+                onKeyDown={e=>e.key==='Enter'&&handleAuth()}
+                className="w-full px-3 py-2.5 rounded-lg text-sm border"
+                style={{background:'#FAF5EA',border:'1px solid #E0D6C3',color:'#1F1B16'}}
+                placeholder="sua senha" />
+            </div>
+            <button onClick={handleAuth} className="w-full py-3 rounded-lg font-medium text-sm"
+              style={{background:'#2A3B2A',color:'#F2EDE3'}}>
+              {isSignUp ? 'Criar Conta' : 'Entrar'}
+            </button>
+            <div className="text-center mt-4">
+              <button onClick={()=>setIsSignUp(!isSignUp)} className="text-sm"
+                style={{background:'none',color:'#6B6358',border:'none',cursor:'pointer'}}>
+                {isSignUp ? 'Já tem conta? Entrar' : 'Não tem conta? Criar'}
               </button>
-              
-              <div style={{textAlign: 'center', marginTop: '15px'}}>
-                <button onClick={() => setIsSignUp(!isSignUp)} style={{background: 'none', color: '#2a3b2a', width: 'auto', padding: '5px'}}>
-                  {isSignUp ? 'Já tem conta?' : 'Criar conta'}
+            </div>
+            <p className="text-xs text-center mt-6" style={{color:'#9A8F7E'}}>
+              Seus dados são salvos com segurança e sincronizam entre todos os dispositivos.
+            </p>
+          </div>
+        </div>
+      );
+
+      return <FinanceControlApp userId={user.id} userEmail={user.email} onLogout={async()=>{await supabase.auth.signOut();setUser(null);}} />;
+    }
+
+
+
+// ============ Helpers ============
+const formatBRL = (value) => {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  }).format(value || 0);
+};
+
+const parseBRL = (str) => {
+  if (typeof str === 'number') return str;
+  if (!str) return 0;
+  const cleaned = str.toString().replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.');
+  return parseFloat(cleaned) || 0;
+};
+
+const getCurrentMonth = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+};
+
+const getMonthName = (yyyymm) => {
+  if (!yyyymm) return '';
+  const [year, month] = yyyymm.split('-');
+  const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  return `${months[parseInt(month) - 1]} ${year}`;
+};
+
+const PRIORIDADES = {
+  alta: { label: 'Alta', color: '#9B2C2C', bg: '#FBEBE7' },
+  media: { label: 'Média', color: '#B45309', bg: '#FEF3DE' },
+  baixa: { label: 'Baixa', color: '#6B6358', bg: '#EFEAE0' }
+};
+
+const defaultData = {
+  config: {
+    salarioBase: 3000,
+    comissaoEstimada: 1000,
+    cdiAnual: 14.65,
+    caixinhaPctCDI: 115,
+    fiiYieldMensal: 0.9,
+    metaRendaPassiva: 6000
+  },
+  contas: [
+    { id: 't_nubank', nome: 'Fatura cartão Nubank', valor: 0 },
+    { id: 't_dasmei', nome: 'DAS-MEI (conta PJ)', valor: 0 },
+    { id: 't_mae', nome: 'Pagar minha mãe (contas de casa)', valor: 0 },
+    { id: 't_cabelo', nome: 'Cortar o cabelo', valor: 0 }
+  ],
+  emergencia: { meta: 6000, acumulado: 1300, metaMensal: 300 },
+  investimentos: { acumulado: 0 },
+  desejos: [],
+  mesAtual: {
+    mes: getCurrentMonth(),
+    comissao: 0,
+    contasPagas: [],
+    aportesEmergencia: [],
+    aportesInvestimento: [],
+    aportesDesejos: {}
+  },
+  historico: []
+};
+
+// ============ Theme ============
+const t = {
+  bg: '#F2EDE3',
+  surface: '#FFFFFF',
+  surfaceAlt: '#FAF5EA',
+  border: '#E0D6C3',
+  borderStrong: '#BFB199',
+  text: '#1F1B16',
+  textMuted: '#6B6358',
+  textSubtle: '#9A8F7E',
+  accent: '#8B2727',
+  accentDark: '#6B1D1D',
+  accentLight: '#FAE7E3',
+  positive: '#4D7C0F',
+  positiveLight: '#ECF4DE',
+  amber: '#B45309',
+  amberLight: '#FEF3DE',
+  ink: '#13110E'
+};
+
+// ============ Reusable Input ============
+function MoneyInput({ value, onChange, placeholder, autoFocus, onKeyDown, className = '' }) {
+  return (
+    <div className="relative">
+      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium" style={{ color: t.textSubtle }}>R$</span>
+      <input
+        type="text"
+        inputMode="decimal"
+        autoFocus={autoFocus}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={onKeyDown}
+        placeholder={placeholder || '0,00'}
+        className={`w-full pl-10 pr-3 py-2.5 rounded-lg outline-none transition-all ${className}`}
+        style={{
+          backgroundColor: t.surface,
+          border: `1px solid ${t.border}`,
+          color: t.text,
+          fontFamily: 'Geist, system-ui, sans-serif',
+          fontSize: '0.95rem'
+        }}
+      />
+    </div>
+  );
+}
+
+function TextInput({ value, onChange, placeholder, autoFocus, onKeyDown }) {
+  return (
+    <input
+      type="text"
+      autoFocus={autoFocus}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      onKeyDown={onKeyDown}
+      placeholder={placeholder}
+      className="w-full px-3 py-2.5 rounded-lg outline-none transition-all"
+      style={{
+        backgroundColor: t.surface,
+        border: `1px solid ${t.border}`,
+        color: t.text,
+        fontFamily: 'Geist, system-ui, sans-serif',
+        fontSize: '0.95rem'
+      }}
+    />
+  );
+}
+
+function PercentInput({ value, onChange, placeholder, onKeyDown }) {
+  return (
+    <div className="relative">
+      <input
+        type="text"
+        inputMode="decimal"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={onKeyDown}
+        placeholder={placeholder || '0,00'}
+        className="w-full pl-3 pr-10 py-2.5 rounded-lg outline-none transition-all"
+        style={{
+          backgroundColor: t.surface,
+          border: `1px solid ${t.border}`,
+          color: t.text,
+          fontFamily: 'Geist, system-ui, sans-serif',
+          fontSize: '0.95rem'
+        }}
+      />
+      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium" style={{ color: t.textSubtle }}>%</span>
+    </div>
+  );
+}
+
+// ============ Main Component ============
+function FinanceControlApp({ userId, userEmail, onLogout }) {
+  const [data, setData] = useState(defaultData);
+  const [loading, setLoading] = useState(true);
+  const [showConfig, setShowConfig] = useState(false);
+  const [showHistorico, setShowHistorico] = useState(false);
+  const [editingComissao, setEditingComissao] = useState(false);
+  const [editingEmergencia, setEditingEmergencia] = useState(false);
+
+  const [comissaoInput, setComissaoInput] = useState('');
+  const [configForm, setConfigForm] = useState({
+    salarioBase: '',
+    comissaoEstimada: '',
+    cdiAnual: '',
+    caixinhaPctCDI: '',
+    fiiYieldMensal: '',
+    metaRendaPassiva: ''
+  });
+  const [emergenciaForm, setEmergenciaForm] = useState({ meta: '', acumulado: '', metaMensal: '' });
+  const [aporteEmergenciaInput, setAporteEmergenciaInput] = useState('');
+  const [aporteInvestimentoInput, setAporteInvestimentoInput] = useState('');
+
+  const [novaConta, setNovaConta] = useState({ nome: '', valor: '' });
+  const [novoDesejo, setNovoDesejo] = useState({ nome: '', valor: '', prioridade: 'media' });
+  const [aporteDesejoInputs, setAporteDesejoInputs] = useState({});
+  const [contaValorEdit, setContaValorEdit] = useState({});
+  const [contaNomeEdit, setContaNomeEdit] = useState({});
+
+  // ===== Load on mount =====
+  useEffect(() => {
+    loadData(userId);
+  }, []);
+
+  async function loadData(userId) {
+    try {
+      const result = await supabase.from('user_data').select('data').eq('user_id', userId).single();
+      if (result?.data) {
+        const parsed = result.data.data;
+        let merged = {
+          ...defaultData,
+          ...parsed,
+          config: { ...defaultData.config, ...(parsed.config || {}) },
+          emergencia: { ...defaultData.emergencia, ...(parsed.emergencia || {}) },
+          investimentos: { ...defaultData.investimentos, ...(parsed.investimentos || {}) },
+          mesAtual: { ...defaultData.mesAtual, ...(parsed.mesAtual || {}) },
+          contas: parsed.contas || [],
+          desejos: parsed.desejos || [],
+          historico: parsed.historico || []
+        };
+
+        // Migração: converte formato antigo (número único) para lista de aportes
+        if (!Array.isArray(merged.mesAtual.aportesEmergencia)) {
+          const antigo = typeof merged.mesAtual.aporteEmergencia === 'number' ? merged.mesAtual.aporteEmergencia : 0;
+          merged.mesAtual.aportesEmergencia = antigo > 0 ? [{ id: 'mig_e', valor: antigo, label: 'Aporte' }] : [];
+        }
+        if (!Array.isArray(merged.mesAtual.aportesInvestimento)) {
+          const antigo = typeof merged.mesAtual.aporteInvestimento === 'number' ? merged.mesAtual.aporteInvestimento : 0;
+          merged.mesAtual.aportesInvestimento = antigo > 0 ? [{ id: 'mig_i', valor: antigo, label: 'Aporte' }] : [];
+        }
+        delete merged.mesAtual.aporteEmergencia;
+        delete merged.mesAtual.aporteInvestimento;
+
+        // Auto rollover mensal
+        const current = getCurrentMonth();
+        if (merged.mesAtual.mes && merged.mesAtual.mes !== current) {
+          const totContas = merged.contas.reduce((s, c) => s + (c.valor || 0), 0);
+          const totDesejos = Object.values(merged.mesAtual.aportesDesejos || {}).reduce((s, v) => s + (v || 0), 0);
+          const receita = (merged.config.salarioBase || 0) + (merged.mesAtual.comissao || 0);
+          const aporteEm = (merged.mesAtual.aportesEmergencia || []).reduce((s, a) => s + (a.valor || 0), 0);
+          const aporteInv = (merged.mesAtual.aportesInvestimento || []).reduce((s, a) => s + (a.valor || 0), 0);
+
+          // Move aporte emergência para acumulado
+          if (aporteEm > 0) {
+            merged.emergencia.acumulado = (merged.emergencia.acumulado || 0) + aporteEm;
+          }
+          // Move aporte investimento para acumulado
+          if (aporteInv > 0) {
+            merged.investimentos.acumulado = (merged.investimentos.acumulado || 0) + aporteInv;
+          }
+
+          // Move aportes de desejos para guardado de cada item
+          merged.desejos = merged.desejos.map(d => {
+            const aporte = (merged.mesAtual.aportesDesejos || {})[d.id] || 0;
+            return aporte > 0 ? { ...d, guardado: (d.guardado || 0) + aporte } : d;
+          });
+
+          if (merged.mesAtual.comissao || aporteEm || aporteInv || totDesejos) {
+            merged.historico.push({
+              mes: merged.mesAtual.mes,
+              receita,
+              contas: totContas,
+              emergencia: aporteEm,
+              investimento: aporteInv,
+              desejos: totDesejos,
+              sobra: receita - totContas - aporteEm - aporteInv - totDesejos
+            });
+          }
+
+          merged.mesAtual = {
+            mes: current,
+            comissao: 0,
+            contasPagas: [],
+            aportesEmergencia: [],
+            aportesInvestimento: [],
+            aportesDesejos: {}
+          };
+
+          await supabase.from('user_data').upsert({ user_id: userId, data: merged, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+        }
+        setData(merged);
+        setComissaoInput(merged.mesAtual.comissao ? merged.mesAtual.comissao.toString().replace('.', ',') : '');
+        setAporteEmergenciaInput('');
+        setAporteInvestimentoInput('');
+      }
+    } catch (e) {
+      console.log('Iniciando com dados padrão');
+    }
+    setLoading(false);
+  }
+
+  async function saveData(newData) {
+    setData(newData);
+    try {
+      if (userId) { await supabase.from('user_data').upsert({ user_id: userId, data: newData, updated_at: new Date().toISOString() }, { onConflict: 'user_id' }); }
+    } catch (e) {
+      console.error('Erro ao salvar:', e);
+    }
+  }
+
+  // ===== Calculations =====
+  const salarioBase = data.config.salarioBase || 0;
+  const comissaoAtual = data.mesAtual.comissao || 0;
+  const receitaTotal = salarioBase + comissaoAtual;
+  const totalContas = data.contas.reduce((sum, c) => sum + (c.valor || 0), 0);
+  const aportesEmergenciaLista = data.mesAtual.aportesEmergencia || [];
+  const aportesInvestimentoLista = data.mesAtual.aportesInvestimento || [];
+  const aporteEmergencia = aportesEmergenciaLista.reduce((s, a) => s + (a.valor || 0), 0);
+  const aporteInvestimento = aportesInvestimentoLista.reduce((s, a) => s + (a.valor || 0), 0);
+  const aportesDesejos = data.mesAtual.aportesDesejos || {};
+  const totalAportesDesejos = Object.values(aportesDesejos).reduce((s, v) => s + (v || 0), 0);
+  const disponivelAposObrigatorios = receitaTotal - totalContas - aporteEmergencia - aporteInvestimento;
+  const sobra = disponivelAposObrigatorios - totalAportesDesejos;
+
+  const receitaMinima = salarioBase;
+  const receitaMaxima = salarioBase + (data.config.comissaoEstimada || 0);
+
+  const emergenciaCompleta = data.emergencia.meta > 0 && data.emergencia.acumulado >= data.emergencia.meta;
+  const pctEmergencia = data.emergencia.meta > 0
+    ? Math.min(100, (data.emergencia.acumulado / data.emergencia.meta) * 100)
+    : 0;
+  const investimentoAcumulado = data.investimentos?.acumulado || 0;
+
+  // ===== Rendimentos =====
+  const cdiAnual = data.config.cdiAnual ?? 14.65;
+  const caixinhaPctCDI = data.config.caixinhaPctCDI ?? 115;
+  const fiiYieldMensal = data.config.fiiYieldMensal ?? 0.9;
+
+  // CDI mensal composto a partir da taxa anual
+  const cdiMensal = Math.pow(1 + cdiAnual / 100, 1 / 12) - 1;
+  const caixinhaTaxaMensal = cdiMensal * (caixinhaPctCDI / 100);
+  const fiiTaxaMensal = fiiYieldMensal / 100;
+
+  // Emergência: rendimento esperado próximo mês (bruto)
+  const rendimentoProxMes = data.emergencia.acumulado * caixinhaTaxaMensal;
+  const saldoEmergencia12m = data.emergencia.acumulado * Math.pow(1 + caixinhaTaxaMensal, 12);
+
+  // Meses até atingir a meta, considerando aporte mensal + rendimento composto
+  function mesesParaMeta() {
+    const r = caixinhaTaxaMensal;
+    const a = data.emergencia.metaMensal || 0;
+    const P = data.emergencia.acumulado || 0;
+    const M = data.emergencia.meta || 0;
+    if (M <= 0 || P >= M) return 0;
+    if (r <= 0) return a > 0 ? Math.ceil((M - P) / a) : Infinity;
+    if (a <= 0) return P > 0 ? Math.ceil(Math.log(M / P) / Math.log(1 + r)) : Infinity;
+    const num = M + a / r;
+    const den = P + a / r;
+    return Math.ceil(Math.log(num / den) / Math.log(1 + r));
+  }
+  const mesesAteMeta = mesesParaMeta();
+
+  // Quanto vira aporte pra investimentos na Fase 2
+  const aporteInvestMensal = data.emergencia.metaMensal || 300;
+
+  // FIIs: renda mensal atual estimada e projeções
+  const rendaMensalFII = investimentoAcumulado * fiiTaxaMensal;
+
+  function projetarFII(meses) {
+    const P = investimentoAcumulado;
+    const r = fiiTaxaMensal;
+    const a = aporteInvestMensal;
+    if (r === 0) return { patrimonio: P + a * meses, renda: 0 };
+    const patrimonio = P * Math.pow(1 + r, meses) + a * ((Math.pow(1 + r, meses) - 1) / r);
+    return { patrimonio, renda: patrimonio * r };
+  }
+
+  const projecoes = [
+    { label: '1 ano', meses: 12 },
+    { label: '5 anos', meses: 60 },
+    { label: '10 anos', meses: 120 },
+    { label: '20 anos', meses: 240 }
+  ].map(p => ({ ...p, ...projetarFII(p.meses) }));
+
+  // ===== Previsão de renda passiva alvo =====
+  // Saldos efetivos: confirmado + aportes pendentes do mês (atualiza ao registrar aporte)
+  const effEmergencia = (data.emergencia.acumulado || 0) + aporteEmergencia;
+  const effInvestimento = investimentoAcumulado + aporteInvestimento;
+  const metaRendaPassiva = data.config.metaRendaPassiva ?? 6000;
+  const patrimonioAlvoRenda = fiiTaxaMensal > 0 ? metaRendaPassiva / fiiTaxaMensal : 0;
+  const rendaPassivaAtual = effInvestimento * fiiTaxaMensal;
+
+  function mesesParaMetaDe(saldoInicial) {
+    const r = caixinhaTaxaMensal;
+    const a = data.emergencia.metaMensal || 0;
+    const M = data.emergencia.meta || 0;
+    const P = saldoInicial;
+    if (M <= 0 || P >= M) return 0;
+    if (r <= 0) return a > 0 ? Math.ceil((M - P) / a) : Infinity;
+    if (a <= 0) return P > 0 ? Math.ceil(Math.log(M / P) / Math.log(1 + r)) : Infinity;
+    const num = M + a / r;
+    const den = P + a / r;
+    return Math.ceil(Math.log(num / den) / Math.log(1 + r));
+  }
+
+  function mesesAteRendaPassiva() {
+    const r = fiiTaxaMensal;
+    if (r <= 0 || patrimonioAlvoRenda <= 0) return Infinity;
+    if (effInvestimento >= patrimonioAlvoRenda) return 0;
+
+    // Investir em FIIs desde agora, independente da emergência
+    // FV = P(1+r)^n + a * ((1+r)^n - 1) / r = patrimônio alvo
+    // Resolvendo para n
+    const P = effInvestimento;
+    const a = aporteInvestMensal;
+    const M = patrimonioAlvoRenda;
+
+    if (a <= 0) {
+      if (P <= 0) return Infinity;
+      // Só composto: M = P(1+r)^n → n = log(M/P) / log(1+r)
+      return Math.ceil(Math.log(M / P) / Math.log(1 + r));
+    }
+    // Com aporte mensal
+    const num = M + a / r;
+    const den = P + a / r;
+    if (den <= 0) return Infinity;
+    const m = Math.log(num / den) / Math.log(1 + r);
+    return Math.ceil(m);
+  }
+  const mesesAteRenda = mesesAteRendaPassiva();
+
+  function formatPrazo(meses) {
+    if (!isFinite(meses)) return '—';
+    if (meses <= 0) return 'Meta atingida!';
+    const anos = Math.floor(meses / 12);
+    const m = meses % 12;
+    const partes = [];
+    if (anos > 0) partes.push(`${anos} ${anos === 1 ? 'ano' : 'anos'}`);
+    if (m > 0) partes.push(`${m} ${m === 1 ? 'mês' : 'meses'}`);
+    return partes.join(' e ') || '0 meses';
+  }
+
+  function dataFutura(meses) {
+    if (!isFinite(meses) || meses <= 0) return '';
+    const d = new Date();
+    d.setMonth(d.getMonth() + meses);
+    const meses3 = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+    return `${meses3[d.getMonth()]}/${d.getFullYear()}`;
+  }
+  const pctRendaPassiva = patrimonioAlvoRenda > 0
+    ? Math.min(100, (effInvestimento / patrimonioAlvoRenda) * 100)
+    : 0;
+
+  // ===== Handlers =====
+  const handleComissaoSave = () => {
+    const novo = { ...data, mesAtual: { ...data.mesAtual, comissao: parseBRL(comissaoInput) } };
+    saveData(novo);
+    setEditingComissao(false);
+  };
+
+  const handleConfigSave = () => {
+    const novo = {
+      ...data,
+      config: {
+        ...data.config,
+        salarioBase: parseBRL(configForm.salarioBase) || data.config.salarioBase,
+        comissaoEstimada: parseBRL(configForm.comissaoEstimada) || data.config.comissaoEstimada,
+        cdiAnual: parseBRL(configForm.cdiAnual) || data.config.cdiAnual,
+        caixinhaPctCDI: parseBRL(configForm.caixinhaPctCDI) || data.config.caixinhaPctCDI,
+        fiiYieldMensal: parseBRL(configForm.fiiYieldMensal) || data.config.fiiYieldMensal,
+        metaRendaPassiva: parseBRL(configForm.metaRendaPassiva) || data.config.metaRendaPassiva
+      }
+    };
+    saveData(novo);
+    setShowConfig(false);
+  };
+
+  const handleEmergenciaSave = () => {
+    const novo = {
+      ...data,
+      emergencia: {
+        meta: parseBRL(emergenciaForm.meta),
+        acumulado: parseBRL(emergenciaForm.acumulado),
+        metaMensal: parseBRL(emergenciaForm.metaMensal)
+      }
+    };
+    saveData(novo);
+    setEditingEmergencia(false);
+  };
+
+  const handleAporteEmergencia = () => {
+    const valor = parseBRL(aporteEmergenciaInput);
+    if (valor <= 0) return;
+    const lista = [...(data.mesAtual.aportesEmergencia || []), { id: Date.now().toString(), valor }];
+    saveData({ ...data, mesAtual: { ...data.mesAtual, aportesEmergencia: lista } });
+    setAporteEmergenciaInput('');
+  };
+
+  const removeAporteEmergencia = (id) => {
+    const lista = (data.mesAtual.aportesEmergencia || []).filter(a => a.id !== id);
+    saveData({ ...data, mesAtual: { ...data.mesAtual, aportesEmergencia: lista } });
+  };
+
+  const handleAporteInvestimento = () => {
+    const valor = parseBRL(aporteInvestimentoInput);
+    if (valor <= 0) return;
+    const lista = [...(data.mesAtual.aportesInvestimento || []), { id: Date.now().toString(), valor }];
+    saveData({ ...data, mesAtual: { ...data.mesAtual, aportesInvestimento: lista } });
+    setAporteInvestimentoInput('');
+  };
+
+  const removeAporteInvestimento = (id) => {
+    const lista = (data.mesAtual.aportesInvestimento || []).filter(a => a.id !== id);
+    saveData({ ...data, mesAtual: { ...data.mesAtual, aportesInvestimento: lista } });
+  };
+
+  const addConta = () => {
+    if (!novaConta.nome.trim()) return;
+    const novo = {
+      ...data,
+      contas: [...data.contas, {
+        id: Date.now().toString(),
+        nome: novaConta.nome.trim(),
+        valor: parseBRL(novaConta.valor)
+      }]
+    };
+    saveData(novo);
+    setNovaConta({ nome: '', valor: '' });
+  };
+
+  const removeConta = (id) => {
+    const novo = {
+      ...data,
+      contas: data.contas.filter(c => c.id !== id),
+      mesAtual: {
+        ...data.mesAtual,
+        contasPagas: data.mesAtual.contasPagas.filter(cid => cid !== id)
+      }
+    };
+    saveData(novo);
+  };
+
+  const updateContaValor = (id, valorStr) => {
+    const novoValor = parseBRL(valorStr);
+    const novo = {
+      ...data,
+      contas: data.contas.map(c => c.id === id ? { ...c, valor: novoValor } : c)
+    };
+    saveData(novo);
+    const novos = { ...contaValorEdit };
+    delete novos[id];
+    setContaValorEdit(novos);
+  };
+
+  const updateContaNome = (id, nomeStr) => {
+    const nome = (nomeStr || '').trim();
+    if (!nome) {
+      const novos = { ...contaNomeEdit };
+      delete novos[id];
+      setContaNomeEdit(novos);
+      return;
+    }
+    const novo = {
+      ...data,
+      contas: data.contas.map(c => c.id === id ? { ...c, nome } : c)
+    };
+    saveData(novo);
+    const novos = { ...contaNomeEdit };
+    delete novos[id];
+    setContaNomeEdit(novos);
+  };
+
+  const toggleContaPaga = (id) => {
+    const pagas = data.mesAtual.contasPagas || [];
+    const novaLista = pagas.includes(id) ? pagas.filter(x => x !== id) : [...pagas, id];
+    saveData({ ...data, mesAtual: { ...data.mesAtual, contasPagas: novaLista } });
+  };
+
+  const addDesejo = () => {
+    if (!novoDesejo.nome.trim()) return;
+    const novo = {
+      ...data,
+      desejos: [...data.desejos, {
+        id: Date.now().toString(),
+        nome: novoDesejo.nome.trim(),
+        valor: parseBRL(novoDesejo.valor),
+        guardado: 0,
+        prioridade: novoDesejo.prioridade
+      }]
+    };
+    saveData(novo);
+    setNovoDesejo({ nome: '', valor: '', prioridade: 'media' });
+  };
+
+  const removeDesejo = (id) => {
+    const novosAportes = { ...data.mesAtual.aportesDesejos };
+    delete novosAportes[id];
+    saveData({
+      ...data,
+      desejos: data.desejos.filter(d => d.id !== id),
+      mesAtual: { ...data.mesAtual, aportesDesejos: novosAportes }
+    });
+  };
+
+  const setAporteDesejo = (id) => {
+    const valor = parseBRL(aporteDesejoInputs[id] || '');
+    const novo = {
+      ...data,
+      mesAtual: {
+        ...data.mesAtual,
+        aportesDesejos: { ...data.mesAtual.aportesDesejos, [id]: valor }
+      }
+    };
+    saveData(novo);
+    setAporteDesejoInputs({ ...aporteDesejoInputs, [id]: '' });
+  };
+
+  const completaDesejo = (id) => {
+    const desejo = data.desejos.find(d => d.id === id);
+    if (!desejo) return;
+    if (confirm(`Marcar "${desejo.nome}" como comprado? Ele será removido da lista.`)) {
+      removeDesejo(id);
+    }
+  };
+
+  // ===== Render =====
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: t.bg }}>
+        <div style={{ color: t.textMuted, fontFamily: 'Geist, sans-serif' }}>Carregando seus dados...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen" style={{ backgroundColor: t.bg, fontFamily: 'Geist, system-ui, sans-serif' }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Geist:wght@300;400;500;600;700&display=swap');
+        * { -webkit-tap-highlight-color: transparent; }
+        .serif { font-family: 'Fraunces', Georgia, serif; font-feature-settings: "ss01", "ss02"; }
+        .num { font-variant-numeric: tabular-nums; }
+        button:focus-visible, input:focus-visible { outline: 2px solid ${t.accent}; outline-offset: 1px; }
+        input:focus { border-color: ${t.accent} !important; }
+        .grain {
+          background-image: radial-gradient(${t.borderStrong}22 1px, transparent 1px);
+          background-size: 24px 24px;
+        }
+      `}</style>
+
+      <div className="max-w-3xl mx-auto px-4 py-8 md:py-12">
+
+        {/* ===== HEADER ===== */}
+        <header className="mb-8">
+          <div className="flex items-start justify-between mb-2">
+            <div>
+              <div className="flex items-center gap-2 mb-1" style={{ color: t.textMuted }}>
+                <Calendar size={14} />
+                <span className="text-xs uppercase tracking-widest font-medium">{getMonthName(data.mesAtual.mes)}</span>
+              </div>
+              <h1 className="serif text-4xl md:text-5xl font-medium leading-none" style={{ color: t.ink }}>
+                Controle <em style={{ color: t.accent }}>financeiro</em>
+              </h1>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setConfigForm({
+                    salarioBase: data.config.salarioBase.toString().replace('.', ','),
+                    comissaoEstimada: data.config.comissaoEstimada.toString().replace('.', ','),
+                    cdiAnual: (data.config.cdiAnual ?? 14.65).toString().replace('.', ','),
+                    caixinhaPctCDI: (data.config.caixinhaPctCDI ?? 115).toString().replace('.', ','),
+                    fiiYieldMensal: (data.config.fiiYieldMensal ?? 0.9).toString().replace('.', ','),
+                    metaRendaPassiva: (data.config.metaRendaPassiva ?? 6000).toString().replace('.', ',')}
+                  );
+                  setShowConfig(!showConfig);
+                }}
+                className="p-2 rounded-full transition-colors"
+                style={{ color: t.textMuted, backgroundColor: showConfig ? t.surface : 'transparent' }}
+                title="Configurações"
+              >
+                <Settings size={18} />
+              </button>
+              <button onClick={onLogout} className="p-2 rounded-full transition-colors" style={{ color: t.textMuted }} title={`Sair (${userEmail})`}>
+                <LogOut size={18} />
+              </button>
+            </div>
+          </div>
+          <p className="text-sm" style={{ color: t.textMuted }}>
+            Faixa salarial estimada: <span className="num" style={{ color: t.text }}>{formatBRL(receitaMinima)}</span> – <span className="num" style={{ color: t.text }}>{formatBRL(receitaMaxima)}</span>
+          </p>
+        </header>
+
+        {/* ===== CONFIG PANEL ===== */}
+        {showConfig && (
+          <section className="mb-6 p-5 rounded-2xl" style={{ backgroundColor: t.surface, border: `1px solid ${t.border}` }}>
+            <h3 className="serif text-lg mb-4" style={{ color: t.ink }}>Configurações</h3>
+            <div className="space-y-4">
+              <div>
+                <div className="text-[10px] uppercase tracking-widest font-semibold mb-2" style={{ color: t.accent }}>Renda</div>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs mb-1.5 uppercase tracking-wider font-medium" style={{ color: t.textMuted }}>Salário base (fixo)</label>
+                    <MoneyInput value={configForm.salarioBase} onChange={(v) => setConfigForm({ ...configForm, salarioBase: v })} />
+                  </div>
+                  <div>
+                    <label className="block text-xs mb-1.5 uppercase tracking-wider font-medium" style={{ color: t.textMuted }}>Comissão máxima estimada</label>
+                    <MoneyInput value={configForm.comissaoEstimada} onChange={(v) => setConfigForm({ ...configForm, comissaoEstimada: v })} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2" style={{ borderTop: `1px solid ${t.border}` }}>
+                <div className="text-[10px] uppercase tracking-widest font-semibold mb-2" style={{ color: t.accent }}>Taxas de rendimento</div>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs mb-1.5 uppercase tracking-wider font-medium" style={{ color: t.textMuted }}>CDI anual (%)</label>
+                    <PercentInput value={configForm.cdiAnual} onChange={(v) => setConfigForm({ ...configForm, cdiAnual: v })} />
+                    <p className="text-[11px] mt-1" style={{ color: t.textSubtle }}>Taxa básica usada para calcular o rendimento da Caixinha Nubank.</p>
+                  </div>
+                  <div>
+                    <label className="block text-xs mb-1.5 uppercase tracking-wider font-medium" style={{ color: t.textMuted }}>Caixinha Nubank (% do CDI)</label>
+                    <PercentInput value={configForm.caixinhaPctCDI} onChange={(v) => setConfigForm({ ...configForm, caixinhaPctCDI: v })} />
+                  </div>
+                  <div>
+                    <label className="block text-xs mb-1.5 uppercase tracking-wider font-medium" style={{ color: t.textMuted }}>Dividend yield mensal dos FIIs (%)</label>
+                    <PercentInput value={configForm.fiiYieldMensal} onChange={(v) => setConfigForm({ ...configForm, fiiYieldMensal: v })} />
+                    <p className="text-[11px] mt-1" style={{ color: t.textSubtle }}>Média estimada de dividendos mensais (FIIs costumam render entre 0,7% e 1,0%).</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2" style={{ borderTop: `1px solid ${t.border}` }}>
+                <div className="text-[10px] uppercase tracking-widest font-semibold mb-2" style={{ color: t.accent }}>Meta de longo prazo</div>
+                <div>
+                  <label className="block text-xs mb-1.5 uppercase tracking-wider font-medium" style={{ color: t.textMuted }}>Renda passiva mensal desejada</label>
+                  <MoneyInput value={configForm.metaRendaPassiva} onChange={(v) => setConfigForm({ ...configForm, metaRendaPassiva: v })} />
+                  <p className="text-[11px] mt-1" style={{ color: t.textSubtle }}>Quanto você quer receber por mês de dividendos de FIIs na aposentadoria.</p>
+                </div>
+              </div>
+
+              <div className="flex gap-2 pt-1">
+                <button
+                  onClick={handleConfigSave}
+                  className="flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                  style={{ backgroundColor: t.ink, color: t.bg }}
+                >
+                  Salvar
+                </button>
+                <button
+                  onClick={() => setShowConfig(false)}
+                  className="px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                  style={{ color: t.textMuted, border: `1px solid ${t.border}` }}
+                >
+                  Cancelar
                 </button>
               </div>
             </div>
-          </div>
-        );
-      }
+          </section>
+        )}
 
-      const salario = data.config.salario || 0;
-      const comissao = data.mesAtual.comissao || 0;
-      const receita = salario + comissao;
-      const totalContas = data.contas.reduce((s, c) => s + (c.valor || 0), 0);
-      const aporteEmergencia = data.mesAtual.aportes?.emergencia || 0;
-      const aporteInvestimento = data.mesAtual.aportes?.investimento || 0;
-      const sobra = receita - totalContas - aporteEmergencia - aporteInvestimento;
-
-      const emergenciaCompleta = data.emergencia.acumulado >= data.emergencia.meta;
-      const pctEmergencia = Math.min(100, (data.emergencia.acumulado / data.emergencia.meta) * 100);
-      const investimentoAcumulado = data.investimentos?.acumulado || 0;
-
-      // Projeção de aposentadoria
-      const fiiYieldMensal = 0.009;
-      const patrimonioAlvo = 6000 / fiiYieldMensal;
-      const pctRenda = Math.min(100, (investimentoAcumulado / patrimonioAlvo) * 100);
-      const rendaPassivaAtual = investimentoAcumulado * fiiYieldMensal;
-
-      return (
-        <div className="container">
-          <div className="header">
-            <div>
-              <h1>💰 Finance Control</h1>
-              <p>{user.email}</p>
+        {/* ===== RESUMO DO MÊS ===== */}
+        <section className="mb-8 p-6 md:p-8 rounded-2xl relative overflow-hidden" style={{ backgroundColor: t.ink, color: t.bg }}>
+          <div className="absolute inset-0 grain opacity-30 pointer-events-none" />
+          <div className="relative">
+            <div className="flex items-center gap-2 mb-1 opacity-60">
+              <Coins size={14} />
+              <span className="text-xs uppercase tracking-widest font-medium">Renda do mês</span>
             </div>
-            <button className="btn-logout" onClick={handleLogout}>Sair</button>
+            <div className="flex items-baseline gap-3 mb-1">
+              <span className="serif num text-5xl md:text-6xl font-medium tracking-tight">{formatBRL(receitaTotal)}</span>
+            </div>
+            <div className="text-sm opacity-60 mb-6 num">
+              {formatBRL(salarioBase)} base + {formatBRL(comissaoAtual)} comissão
+            </div>
+
+            {/* Comissão input */}
+            <div className="p-4 rounded-xl mb-4" style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm opacity-80">Comissão recebida este mês</span>
+                {!editingComissao && (
+                  <button
+                    onClick={() => {
+                      setComissaoInput(comissaoAtual ? comissaoAtual.toString().replace('.', ',') : '');
+                      setEditingComissao(true);
+                    }}
+                    className="text-xs opacity-70 hover:opacity-100 flex items-center gap-1"
+                  >
+                    <Pencil size={12} /> editar
+                  </button>
+                )}
+              </div>
+              {editingComissao ? (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    autoFocus
+                    value={comissaoInput}
+                    onChange={(e) => setComissaoInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleComissaoSave()}
+                    placeholder="0,00"
+                    className="flex-1 px-3 py-2 rounded-lg text-sm outline-none"
+                    style={{ backgroundColor: 'rgba(255,255,255,0.12)', color: t.bg, border: '1px solid rgba(255,255,255,0.2)' }}
+                  />
+                  <button
+                    onClick={handleComissaoSave}
+                    className="px-4 rounded-lg text-sm font-medium"
+                    style={{ backgroundColor: t.bg, color: t.ink }}
+                  >
+                    <Check size={16} />
+                  </button>
+                  <button
+                    onClick={() => setEditingComissao(false)}
+                    className="px-3 rounded-lg text-sm opacity-70"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ) : (
+                <div className="num text-2xl font-medium">{formatBRL(comissaoAtual)}</div>
+              )}
+            </div>
+
+            {/* Allocation breakdown */}
+            <div className="space-y-3 text-sm">
+              <AllocationBar label="Contas a pagar" value={totalContas} total={receitaTotal} color="#E89A8F" icon={<Receipt size={14} />} />
+              {!emergenciaCompleta && (
+                <AllocationBar label="Fundo de emergência" value={aporteEmergencia} total={receitaTotal} color="#C5B17A" icon={<PiggyBank size={14} />} />
+              )}
+              {emergenciaCompleta && (
+                <AllocationBar label="Investimentos (FIIs)" value={aporteInvestimento} total={receitaTotal} color="#7FA8D4" icon={<LineChart size={14} />} />
+              )}
+              <AllocationBar label="Aportes em desejos" value={totalAportesDesejos} total={receitaTotal} color="#B8D49E" icon={<Heart size={14} />} />
+
+              <div className="pt-3 mt-3 border-t flex items-baseline justify-between" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>
+                <span className="text-sm opacity-80">Sobra livre</span>
+                <span className="serif num text-2xl font-medium" style={{ color: sobra >= 0 ? '#B8D49E' : '#E89A8F' }}>
+                  {formatBRL(sobra)}
+                </span>
+              </div>
+              {sobra < 0 && (
+                <div className="flex items-start gap-2 p-3 rounded-lg text-xs" style={{ backgroundColor: 'rgba(232,154,143,0.15)' }}>
+                  <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
+                  <span>Você ultrapassou sua renda em {formatBRL(Math.abs(sobra))}. Reduza algum aporte ou conta para equilibrar o mês.</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* ===== META DE APOSENTADORIA (previsão) ===== */}
+        <section className="mb-8 p-6 md:p-7 rounded-2xl relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #2A3B2A 0%, #1E2D24 100%)', color: t.bg }}>
+          <div className="absolute inset-0 grain opacity-20 pointer-events-none" />
+          <div className="relative">
+            <div className="flex items-center gap-2 mb-3 opacity-70">
+              <Target size={14} />
+              <span className="text-xs uppercase tracking-widest font-medium">Meta de aposentadoria</span>
+            </div>
+
+            <div className="flex items-baseline gap-2 mb-1">
+              <span className="serif num text-4xl md:text-5xl font-medium tracking-tight">{formatBRL(metaRendaPassiva)}</span>
+              <span className="text-lg opacity-70">/mês</span>
+            </div>
+            <div className="text-sm opacity-60 mb-5">de renda passiva com dividendos de FIIs</div>
+
+            {mesesAteRenda <= 0 ? (
+              <div className="p-4 rounded-xl flex items-center gap-3" style={{ backgroundColor: 'rgba(184,212,158,0.15)' }}>
+                <Trophy size={22} style={{ color: '#B8D49E' }} />
+                <div>
+                  <div className="serif text-xl font-medium" style={{ color: '#B8D49E' }}>Meta atingida!</div>
+                  <div className="text-xs opacity-70">Sua renda passiva já cobre o objetivo. Parabéns!</div>
+                </div>
+              </div>
+            ) : !isFinite(mesesAteRenda) ? (
+              <div className="p-4 rounded-xl text-sm opacity-80" style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}>
+                Defina um aporte mensal e taxas de rendimento para calcular a previsão.
+              </div>
+            ) : (
+              <>
+                <div className="p-4 rounded-xl mb-4" style={{ backgroundColor: 'rgba(255,255,255,0.07)' }}>
+                  <div className="text-[11px] uppercase tracking-widest font-medium opacity-60 mb-1">Tempo estimado para alcançar</div>
+                  <div className="serif text-3xl md:text-4xl font-medium mb-1" style={{ color: '#B8D49E' }}>
+                    {formatPrazo(mesesAteRenda)}
+                  </div>
+                  <div className="text-xs opacity-60">
+                    previsão: <span className="num">{dataFutura(mesesAteRenda)}</span>
+                    {' · '}{mesesAteRenda} {mesesAteRenda === 1 ? 'mês' : 'meses'} no total
+                  </div>
+                </div>
+
+                {/* Progresso até o patrimônio-alvo */}
+                <div className="mb-4">
+                  <div className="h-1.5 rounded-full overflow-hidden mb-1.5" style={{ backgroundColor: 'rgba(255,255,255,0.12)' }}>
+                    <div className="h-full rounded-full transition-all" style={{ width: `${Math.max(1, pctRendaPassiva)}%`, backgroundColor: '#B8D49E' }} />
+                  </div>
+                  <div className="flex justify-between text-[11px] opacity-60 num">
+                    <span>{pctRendaPassiva.toFixed(2)}% do caminho</span>
+                    <span>alvo: {formatBRL(patrimonioAlvoRenda)} em FIIs</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
+                    <div className="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">Renda passiva hoje</div>
+                    <div className="num font-medium">{formatBRL(rendaPassivaAtual)}/mês</div>
+                  </div>
+                  <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
+                    <div className="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">Aporte mensal</div>
+                    <div className="num font-medium">{formatBRL(aporteInvestMensal)}/mês</div>
+                  </div>
+                </div>
+
+                <p className="text-[11px] opacity-50 mt-3 leading-relaxed">
+                  Baseado em aportes de {formatBRL(aporteInvestMensal)}/mês em FIIs a {fiiYieldMensal.toString().replace('.', ',')}% a.m. com reinvestimento total dos dividendos. Seu fundo de emergência rende em paralelo e não afeta esse cálculo. Atualiza a cada novo aporte — aumentar o aporte mensal reduz bastante o prazo.
+                </p>
+              </>
+            )}
+          </div>
+        </section>
+
+        {/* ===== CONTAS A PAGAR ===== */}
+        <Section
+          icon={<Receipt size={18} />}
+          title="Contas a pagar"
+          subtitle={`${data.contas.filter(c => data.mesAtual.contasPagas.includes(c.id)).length} de ${data.contas.length} pagas · ${formatBRL(totalContas)} no total`}
+        >
+          <div className="space-y-2 mb-4">
+            {data.contas.length === 0 && (
+              <EmptyState text="Nenhuma conta cadastrada ainda." />
+            )}
+            {data.contas.map(conta => {
+              const pago = data.mesAtual.contasPagas.includes(conta.id);
+              return (
+                <div
+                  key={conta.id}
+                  className="flex items-center gap-3 p-3 rounded-xl transition-all group"
+                  style={{
+                    backgroundColor: pago ? t.positiveLight : t.surface,
+                    border: `1px solid ${pago ? '#CBE0A8' : t.border}`
+                  }}
+                >
+                  <button
+                    onClick={() => toggleContaPaga(conta.id)}
+                    className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-all"
+                    style={{
+                      backgroundColor: pago ? t.positive : 'transparent',
+                      border: `1.5px solid ${pago ? t.positive : t.borderStrong}`
+                    }}
+                  >
+                    {pago && <Check size={14} color="white" strokeWidth={3} />}
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    <input
+                      type="text"
+                      value={contaNomeEdit[conta.id] !== undefined ? contaNomeEdit[conta.id] : conta.nome}
+                      onChange={(e) => setContaNomeEdit({ ...contaNomeEdit, [conta.id]: e.target.value })}
+                      onBlur={(e) => updateContaNome(conta.id, e.target.value)}
+                      onKeyDown={(e) => { if (e.key === 'Enter') e.target.blur(); if (e.key === 'Escape') { const n = { ...contaNomeEdit }; delete n[conta.id]; setContaNomeEdit(n); e.target.blur(); } }}
+                      className="w-full text-sm font-medium bg-transparent outline-none px-1 py-0.5 -mx-1 rounded transition-colors hover:bg-black/5 focus:bg-black/5"
+                      style={{
+                        color: t.text,
+                        textDecoration: pago ? 'line-through' : 'none',
+                        opacity: pago ? 0.6 : 1,
+                        fontFamily: 'Geist, system-ui, sans-serif'
+                      }}
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    value={contaValorEdit[conta.id] !== undefined ? contaValorEdit[conta.id] : (conta.valor ? conta.valor.toString().replace('.', ',') : '')}
+                    onChange={(e) => setContaValorEdit({ ...contaValorEdit, [conta.id]: e.target.value })}
+                    onBlur={(e) => updateContaValor(conta.id, e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') e.target.blur(); if (e.key === 'Escape') { const n = { ...contaValorEdit }; delete n[conta.id]; setContaValorEdit(n); e.target.blur(); } }}
+                    placeholder="0,00"
+                    className="num text-sm font-medium text-right bg-transparent outline-none px-2 py-1 w-24 rounded transition-colors hover:bg-black/5 focus:bg-black/5"
+                    style={{
+                      color: t.text,
+                      opacity: pago ? 0.6 : 1,
+                      fontFamily: 'Geist, system-ui, sans-serif'
+                    }}
+                  />
+                  <button
+                    onClick={() => removeConta(conta.id)}
+                    className="p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{ color: t.textSubtle }}
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              );
+            })}
           </div>
 
-          {/* TABS */}
-          <div className="tabs">
-            <button className={`tab ${activeTab === 'resumo' ? 'active' : ''}`} onClick={() => setActiveTab('resumo')}>Resumo</button>
-            <button className={`tab ${activeTab === 'emergencia' ? 'active' : ''}`} onClick={() => setActiveTab('emergencia')}>Emergência</button>
-            <button className={`tab ${activeTab === 'investimentos' ? 'active' : ''}`} onClick={() => setActiveTab('investimentos')}>Investimentos</button>
-            <button className={`tab ${activeTab === 'contas' ? 'active' : ''}`} onClick={() => setActiveTab('contas')}>Contas</button>
-            <button className={`tab ${activeTab === 'desejos' ? 'active' : ''}`} onClick={() => setActiveTab('desejos')}>Desejos</button>
-            <button className={`tab ${activeTab === 'config' ? 'active' : ''}`} onClick={() => setActiveTab('config')}>⚙️</button>
+          {/* Add new */}
+          <div className="grid grid-cols-1 sm:grid-cols-[1fr,140px,auto] gap-2">
+            <TextInput
+              value={novaConta.nome}
+              onChange={(v) => setNovaConta({ ...novaConta, nome: v })}
+              placeholder="Ex: Aluguel, internet, cartão..."
+              onKeyDown={(e) => e.key === 'Enter' && addConta()}
+            />
+            <MoneyInput
+              value={novaConta.valor}
+              onChange={(v) => setNovaConta({ ...novaConta, valor: v })}
+              onKeyDown={(e) => e.key === 'Enter' && addConta()}
+            />
+            <button
+              onClick={addConta}
+              className="px-4 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-1.5"
+              style={{ backgroundColor: t.ink, color: t.bg }}
+            >
+              <Plus size={16} /> Adicionar
+            </button>
           </div>
+        </Section>
 
-          {/* ABA RESUMO */}
-          {activeTab === 'resumo' && (
+        {/* ===== FUNDO DE EMERGÊNCIA ===== */}
+        <Section
+          icon={<PiggyBank size={18} />}
+          title="Fundo de emergência"
+          subtitle={data.emergencia.meta > 0
+            ? `${formatBRL(data.emergencia.acumulado)} de ${formatBRL(data.emergencia.meta)} acumulados`
+            : 'Defina uma meta para começar a acompanhar'}
+          action={
+            <button
+              onClick={() => {
+                setEmergenciaForm({
+                  meta: data.emergencia.meta.toString().replace('.', ','),
+                  acumulado: data.emergencia.acumulado.toString().replace('.', ','),
+                  metaMensal: data.emergencia.metaMensal.toString().replace('.', ',')
+                });
+                setEditingEmergencia(true);
+              }}
+              className="text-xs flex items-center gap-1 px-2.5 py-1 rounded-md"
+              style={{ color: t.textMuted, border: `1px solid ${t.border}` }}
+            >
+              <Pencil size={12} /> Editar meta
+            </button>
+          }
+        >
+          {editingEmergencia ? (
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs mb-1.5 uppercase tracking-wider font-medium" style={{ color: t.textMuted }}>Meta total</label>
+                <MoneyInput value={emergenciaForm.meta} onChange={(v) => setEmergenciaForm({ ...emergenciaForm, meta: v })} />
+              </div>
+              <div>
+                <label className="block text-xs mb-1.5 uppercase tracking-wider font-medium" style={{ color: t.textMuted }}>Já acumulado</label>
+                <MoneyInput value={emergenciaForm.acumulado} onChange={(v) => setEmergenciaForm({ ...emergenciaForm, acumulado: v })} />
+              </div>
+              <div>
+                <label className="block text-xs mb-1.5 uppercase tracking-wider font-medium" style={{ color: t.textMuted }}>Meta mensal (quanto deseja guardar todo mês)</label>
+                <MoneyInput value={emergenciaForm.metaMensal} onChange={(v) => setEmergenciaForm({ ...emergenciaForm, metaMensal: v })} />
+              </div>
+              <div className="flex gap-2 pt-1">
+                <button onClick={handleEmergenciaSave} className="flex-1 py-2.5 rounded-lg text-sm font-medium" style={{ backgroundColor: t.ink, color: t.bg }}>Salvar</button>
+                <button onClick={() => setEditingEmergencia(false)} className="px-4 py-2.5 rounded-lg text-sm font-medium" style={{ color: t.textMuted, border: `1px solid ${t.border}` }}>Cancelar</button>
+              </div>
+            </div>
+          ) : (
             <>
-              <div className="card">
-                <h2>📊 Resumo do Mês</h2>
-                <div className="dashboard">
-                  <div className="stat">
-                    <div className="stat-label">Receita Total</div>
-                    <div className="stat-value">{formatBRL(receita)}</div>
+              {data.emergencia.meta > 0 && (
+                <div className="mb-4">
+                  <div className="h-2 rounded-full overflow-hidden mb-2" style={{ backgroundColor: t.border }}>
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{
+                        width: `${pctEmergencia}%`,
+                        backgroundColor: emergenciaCompleta ? t.positive : t.positive
+                      }}
+                    />
                   </div>
-                  <div className="stat">
-                    <div className="stat-label">Contas</div>
-                    <div className="stat-value">{formatBRL(totalContas)}</div>
-                  </div>
-                  <div className="stat">
-                    <div className="stat-label">Emergência</div>
-                    <div className="stat-value">{formatBRL(aporteEmergencia)}</div>
-                  </div>
-                  <div className="stat">
-                    <div className="stat-label">Investimentos</div>
-                    <div className="stat-value">{formatBRL(aporteInvestimento)}</div>
-                  </div>
-                  <div className="stat">
-                    <div className="stat-label">Desejos</div>
-                    <div className="stat-value">{formatBRL(0)}</div>
-                  </div>
-                  <div className="stat" style={{background: sobra > 0 ? '#e8f5e9' : '#ffebee'}}>
-                    <div className="stat-label">Sobra</div>
-                    <div className="stat-value" style={{color: sobra > 0 ? '#388e3c' : '#d32f2f'}}>{formatBRL(sobra)}</div>
+                  <div className="flex justify-between text-xs num" style={{ color: t.textMuted }}>
+                    <span>{pctEmergencia.toFixed(1)}% concluído</span>
+                    <span>{emergenciaCompleta ? 'Meta atingida ✓' : `Faltam ${formatBRL(Math.max(0, data.emergencia.meta - data.emergencia.acumulado))}`}</span>
                   </div>
                 </div>
-              </div>
+              )}
 
-              <div className="card">
-                <h2>🎯 Meta de Aposentadoria</h2>
-                <div className="stat">
-                  <div className="stat-label">Meta Mensal de Renda Passiva</div>
-                  <div className="stat-value" style={{fontSize: '24px'}}>{formatBRL(6000)}</div>
+              {data.emergencia.acumulado > 0 && !emergenciaCompleta && (
+                <div className="p-4 rounded-xl mb-4" style={{ backgroundColor: '#FDF8EC', border: `1px solid #E8D89A` }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendingUp size={14} style={{ color: t.amber }} />
+                    <span className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: t.amber }}>
+                      Rendimento na Caixinha Nubank
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <div className="text-[11px] uppercase tracking-wider font-medium mb-1" style={{ color: t.textMuted }}>
+                        Próximo mês (bruto)
+                      </div>
+                      <div className="serif num text-xl font-medium" style={{ color: t.amber }}>
+                        +{formatBRL(rendimentoProxMes)}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[11px] uppercase tracking-wider font-medium mb-1" style={{ color: t.textMuted }}>
+                        Saldo em 12 meses*
+                      </div>
+                      <div className="serif num text-xl font-medium" style={{ color: t.text }}>
+                        {formatBRL(saldoEmergencia12m)}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-[11px] mt-2.5" style={{ color: t.textSubtle }}>
+                    A {caixinhaPctCDI}% do CDI ({cdiAnual.toString().replace('.', ',')}% a.a.). *Sem novos aportes, só rendimento composto. IR de 15-22,5% incide ao sacar.
+                  </p>
                 </div>
-                <div style={{marginTop: '15px'}}>
-                  <div className="stat-label">Renda Passiva Atual</div>
-                  <div style={{fontSize: '18px', fontWeight: 'bold'}}>{formatBRL(rendaPassivaAtual)}/mês</div>
-                </div>
-                <div style={{marginTop: '15px'}}>
-                  <div className="stat-label">Patrimônio em FIIs</div>
-                  <div className="stat-value" style={{fontSize: '18px'}}>{formatBRL(investimentoAcumulado)}</div>
-                  <div style={{fontSize: '12px', color: '#999'}}>Alvo: {formatBRL(patrimonioAlvo)}</div>
-                </div>
-                <div className="progress-bar">
-                  <div className="progress-fill" style={{width: `${pctRenda}%`}}></div>
-                </div>
-                <div style={{fontSize: '12px', color: '#999', marginTop: '10px'}}>
-                  {pctRenda.toFixed(1)}% do caminho
-                </div>
-              </div>
+              )}
 
-              <div className="form-group">
-                <label>Comissão deste mês</label>
-                <input 
-                  type="number" 
-                  value={data.mesAtual.comissao} 
-                  onChange={(e) => updateData({...data, mesAtual: {...data.mesAtual, comissao: parseFloat(e.target.value)}})}
-                />
-              </div>
+              {emergenciaCompleta ? (
+                <div className="p-4 rounded-xl text-center" style={{ backgroundColor: t.positiveLight, border: `1px solid #CBE0A8` }}>
+                  <div className="flex items-center justify-center gap-2 mb-1" style={{ color: t.positive }}>
+                    <Trophy size={18} />
+                    <span className="serif text-lg font-medium">Reserva concluída!</span>
+                  </div>
+                  <p className="text-xs" style={{ color: t.textMuted }}>
+                    Agora seus <span className="num font-medium" style={{ color: t.text }}>{formatBRL(data.emergencia.metaMensal)}</span> mensais
+                    passam a ir para investimentos — veja a seção abaixo. ↓
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {data.emergencia.metaMensal > 0 && (
+                    <div className="p-3 rounded-lg mb-4 text-xs flex items-start gap-2" style={{ backgroundColor: t.surfaceAlt, color: t.textMuted }}>
+                      <TrendingUp size={14} className="flex-shrink-0 mt-0.5" style={{ color: t.amber }} />
+                      <span>
+                        Aportando <span className="num font-medium" style={{ color: t.text }}>{formatBRL(data.emergencia.metaMensal)}</span>/mês
+                        e considerando o rendimento da Caixinha, sua meta será atingida em ~<span className="num font-medium" style={{ color: t.text }}>
+                          {isFinite(mesesAteMeta) ? mesesAteMeta : '∞'}
+                        </span> {mesesAteMeta === 1 ? 'mês' : 'meses'}.
+                      </span>
+                    </div>
+                  )}
+
+                  <AporteCard
+                    lista={aportesEmergenciaLista}
+                    total={aporteEmergencia}
+                    metaMinima={data.emergencia.metaMensal || 0}
+                    inputValue={aporteEmergenciaInput}
+                    setInputValue={setAporteEmergenciaInput}
+                    onAdd={handleAporteEmergencia}
+                    onRemove={removeAporteEmergencia}
+                    accentColor={t.positive}
+                  />
+                </>
+              )}
             </>
           )}
+        </Section>
 
-          {/* ABA EMERGÊNCIA */}
-          {activeTab === 'emergencia' && (
-            <div className="card">
-              <h2>🏦 Fundo de Emergência</h2>
-              <div className="dashboard">
-                <div className="stat">
-                  <div className="stat-label">Meta</div>
-                  <div className="stat-value">{formatBRL(data.emergencia.meta)}</div>
-                </div>
-                <div className="stat">
-                  <div className="stat-label">Acumulado</div>
-                  <div className="stat-value">{formatBRL(data.emergencia.acumulado)}</div>
-                </div>
-              </div>
-              <div className="progress-bar">
-                <div className="progress-fill" style={{width: `${pctEmergencia}%`}}></div>
-              </div>
-              <div style={{fontSize: '12px', color: '#999'}}>{pctEmergencia.toFixed(1)}% completo</div>
-              
-              <div className="form-group" style={{marginTop: '20px'}}>
-                <label>Aporte este mês</label>
-                <div className="input-group">
-                  <input type="number" id="aportEmerg" placeholder="R$" />
-                  <button onClick={() => {
-                    const val = parseFloat(document.getElementById('aportEmerg').value);
-                    if (val > 0) {
-                      updateData({...data, mesAtual: {...data.mesAtual, aportes: {...data.mesAtual.aportes, emergencia: (data.mesAtual.aportes?.emergencia || 0) + val}}});
-                      document.getElementById('aportEmerg').value = '';
-                    }
-                  }}>+ Aportar</button>
-                </div>
+        {/* ===== INVESTIMENTOS (aparece quando reserva é concluída) ===== */}
+        {emergenciaCompleta && (
+          <Section
+            icon={<LineChart size={18} />}
+            title="Investimentos"
+            subtitle={`${formatBRL(investimentoAcumulado)} acumulados · FIIs com reinvestimento de dividendos`}
+          >
+            <div className="p-4 rounded-xl mb-4" style={{ backgroundColor: '#EFF4F9', border: `1px solid #C7D8E8` }}>
+              <div className="flex items-start gap-2 text-xs" style={{ color: t.textMuted }}>
+                <TrendingUp size={14} className="flex-shrink-0 mt-0.5" style={{ color: '#5A8DBF' }} />
+                <span>
+                  <span className="font-medium" style={{ color: t.text }}>Estratégia ativa:</span> distribuir os aportes em FIIs (MXRF11, HGLG11, XPML11, VILG11)
+                  e reinvestir todos os dividendos mensais. Sem mexer na reserva de emergência.
+                </span>
               </div>
             </div>
-          )}
 
-          {/* ABA INVESTIMENTOS */}
-          {activeTab === 'investimentos' && (
-            <div className="card">
-              <h2>📈 FIIs - Investimentos</h2>
-              <div className="dashboard">
-                <div className="stat">
-                  <div className="stat-label">Acumulado em FIIs</div>
-                  <div className="stat-value">{formatBRL(investimentoAcumulado)}</div>
+            {/* Renda passiva atual */}
+            {investimentoAcumulado > 0 && (
+              <div className="p-4 rounded-xl mb-4 relative overflow-hidden" style={{ backgroundColor: '#1F2937', color: t.bg }}>
+                <div className="flex items-center gap-2 mb-1 opacity-60">
+                  <Coins size={12} />
+                  <span className="text-[10px] uppercase tracking-widest font-semibold">Renda passiva atual</span>
                 </div>
-                <div className="stat">
-                  <div className="stat-label">Renda Mensal Estimada</div>
-                  <div className="stat-value">{formatBRL(rendaPassivaAtual)}</div>
+                <div className="serif num text-3xl font-medium mb-1">{formatBRL(rendaMensalFII)}/mês</div>
+                <div className="text-[11px] opacity-60">
+                  Dividendos estimados sobre {formatBRL(investimentoAcumulado)} investidos a {fiiYieldMensal.toString().replace('.', ',')}% a.m. (isentos de IR)
                 </div>
               </div>
-              
-              <div className="form-group">
-                <label>Aporte este mês</label>
-                <div className="input-group">
-                  <input type="number" id="aportInv" placeholder="R$" />
-                  <button onClick={() => {
-                    const val = parseFloat(document.getElementById('aportInv').value);
-                    if (val > 0) {
-                      updateData({...data, mesAtual: {...data.mesAtual, aportes: {...data.mesAtual.aportes, investimento: (data.mesAtual.aportes?.investimento || 0) + val}}});
-                      document.getElementById('aportInv').value = '';
-                    }
-                  }}>+ Aportar</button>
-                </div>
-              </div>
+            )}
 
-              <div className="note">
-                💡 Recomendação: MXRF11, HGLG11, XPML11 com reinvestimento total dos dividendos
+            {/* Projeção de longo prazo */}
+            <div className="p-4 rounded-xl mb-4" style={{ backgroundColor: t.surfaceAlt, border: `1px solid ${t.border}` }}>
+              <div className="flex items-center gap-2 mb-3">
+                <TrendingUp size={14} style={{ color: '#5A8DBF' }} />
+                <span className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: '#5A8DBF' }}>
+                  Projeção para aposentadoria
+                </span>
               </div>
+              <p className="text-[11px] mb-3" style={{ color: t.textSubtle }}>
+                Aportando {formatBRL(aporteInvestMensal)}/mês e reinvestindo todos os dividendos:
+              </p>
+              <div className="space-y-1.5">
+                <div className="grid grid-cols-[60px,1fr,1fr] gap-2 text-[10px] uppercase tracking-wider font-semibold pb-1.5" style={{ color: t.textMuted, borderBottom: `1px solid ${t.border}` }}>
+                  <div>Prazo</div>
+                  <div className="text-right">Patrimônio</div>
+                  <div className="text-right">Renda mensal</div>
+                </div>
+                {projecoes.map((p) => (
+                  <div key={p.label} className="grid grid-cols-[60px,1fr,1fr] gap-2 py-1.5 items-center" style={{ borderBottom: `1px solid ${t.border}33` }}>
+                    <div className="text-sm font-medium" style={{ color: t.text }}>{p.label}</div>
+                    <div className="num text-sm text-right" style={{ color: t.text }}>{formatBRL(p.patrimonio)}</div>
+                    <div className="num text-sm text-right font-medium" style={{ color: '#5A8DBF' }}>{formatBRL(p.renda)}/mês</div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] mt-3" style={{ color: t.textSubtle }}>
+                * Cálculo com base no aporte mensal definido + reinvestimento integral dos dividendos. Cenário sem novos aportes extras (13º, bônus) — qualquer extra acelera o resultado.
+              </p>
             </div>
-          )}
 
-          {/* ABA CONTAS */}
-          {activeTab === 'contas' && (
-            <div className="card">
-              <h2>📋 Contas a Pagar</h2>
-              
-              <div className="form-group">
-                <input type="text" id="nomeConta" placeholder="Nome da conta" />
-                <button onClick={() => {
-                  const nome = document.getElementById('nomeConta').value;
-                  if (nome) {
-                    addConta(nome);
-                    document.getElementById('nomeConta').value = '';
-                  }
-                }}>+ Adicionar Conta</button>
-              </div>
+            <AporteCard
+              lista={aportesInvestimentoLista}
+              total={aporteInvestimento}
+              metaMinima={aporteInvestMensal}
+              inputValue={aporteInvestimentoInput}
+              setInputValue={setAporteInvestimentoInput}
+              onAdd={handleAporteInvestimento}
+              onRemove={removeAporteInvestimento}
+              accentColor="#5A8DBF"
+            />
+          </Section>
+        )}
 
-              {data.contas.length === 0 ? (
-                <p style={{color: '#999', fontSize: '13px'}}>Nenhuma conta adicionada</p>
-              ) : (
-                data.contas.map(conta => (
-                  <div key={conta.id} className="list-item">
-                    <span>{conta.nome}</span>
-                    <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
-                      <input 
-                        type="number" 
-                        value={conta.valor} 
-                        onChange={(e) => updateConta(conta.id, parseFloat(e.target.value))}
-                        style={{width: '80px', padding: '5px'}}
+        {/* ===== LISTA DE DESEJOS ===== */}
+        <Section
+          icon={<Heart size={18} />}
+          title="Lista de desejos"
+          subtitle={data.desejos.length > 0
+            ? `${data.desejos.length} ${data.desejos.length === 1 ? 'item' : 'itens'} · ${formatBRL(data.desejos.reduce((s, d) => s + d.valor, 0))} no total`
+            : 'Coisas que você quer comprar nos próximos meses'}
+        >
+          <div className="space-y-3 mb-4">
+            {data.desejos.length === 0 && (
+              <EmptyState text="Nada na lista ainda. Que tal adicionar aquele item que você anda querendo?" />
+            )}
+            {data.desejos
+              .sort((a, b) => {
+                const order = { alta: 0, media: 1, baixa: 2 };
+                return order[a.prioridade] - order[b.prioridade];
+              })
+              .map(desejo => {
+                const aporteAtual = aportesDesejos[desejo.id] || 0;
+                const totalGuardado = (desejo.guardado || 0) + aporteAtual;
+                const pct = desejo.valor > 0 ? Math.min(100, (totalGuardado / desejo.valor) * 100) : 0;
+                const prio = PRIORIDADES[desejo.prioridade] || PRIORIDADES.media;
+                const completo = totalGuardado >= desejo.valor;
+
+                return (
+                  <div
+                    key={desejo.id}
+                    className="p-4 rounded-xl group"
+                    style={{ backgroundColor: t.surface, border: `1px solid ${t.border}` }}
+                  >
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                          <span className="font-medium" style={{ color: t.text }}>{desejo.nome}</span>
+                          <span
+                            className="text-[10px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded"
+                            style={{ backgroundColor: prio.bg, color: prio.color }}
+                          >
+                            {prio.label}
+                          </span>
+                        </div>
+                        <div className="text-xs num" style={{ color: t.textMuted }}>
+                          {formatBRL(totalGuardado)} de {formatBRL(desejo.valor)}
+                        </div>
+                      </div>
+                      <div className="flex gap-1">
+                        {completo && (
+                          <button
+                            onClick={() => completaDesejo(desejo.id)}
+                            className="px-2 py-1 rounded text-xs font-medium flex items-center gap-1"
+                            style={{ backgroundColor: t.positive, color: 'white' }}
+                          >
+                            <Sparkles size={12} /> Comprei!
+                          </button>
+                        )}
+                        <button
+                          onClick={() => removeDesejo(desejo.id)}
+                          className="p-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                          style={{ color: t.textSubtle }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Progress */}
+                    <div className="h-1.5 rounded-full overflow-hidden mb-3" style={{ backgroundColor: t.border }}>
+                      <div
+                        className="h-full transition-all"
+                        style={{
+                          width: `${pct}%`,
+                          backgroundColor: completo ? t.positive : prio.color
+                        }}
                       />
-                      <span className="list-item-value">{formatBRL(conta.valor)}</span>
-                      <button className="list-item-delete" onClick={() => deleteConta(conta.id)}>✕</button>
+                    </div>
+
+                    {/* Aporte this month */}
+                    {!completo && (
+                      <div className="flex gap-2 items-center">
+                        <div className="flex-1">
+                          <MoneyInput
+                            value={aporteDesejoInputs[desejo.id] || (aporteAtual ? aporteAtual.toString().replace('.', ',') : '')}
+                            onChange={(v) => setAporteDesejoInputs({ ...aporteDesejoInputs, [desejo.id]: v })}
+                            placeholder="Quanto guardar este mês"
+                            onKeyDown={(e) => e.key === 'Enter' && setAporteDesejo(desejo.id)}
+                          />
+                        </div>
+                        <button
+                          onClick={() => setAporteDesejo(desejo.id)}
+                          className="px-3 py-2.5 rounded-lg text-sm font-medium"
+                          style={{ backgroundColor: t.text, color: t.bg }}
+                        >
+                          <ArrowRight size={14} />
+                        </button>
+                      </div>
+                    )}
+                    {aporteAtual > 0 && !completo && (
+                      <div className="text-xs mt-2 num" style={{ color: t.positive }}>
+                        ✓ {formatBRL(aporteAtual)} alocados este mês
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+          </div>
+
+          {/* Add new desejo */}
+          <div className="p-4 rounded-xl space-y-2" style={{ backgroundColor: t.surfaceAlt, border: `1px dashed ${t.borderStrong}` }}>
+            <div className="text-xs uppercase tracking-wider font-medium mb-2" style={{ color: t.textMuted }}>
+              Novo desejo
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr,140px] gap-2">
+              <TextInput
+                value={novoDesejo.nome}
+                onChange={(v) => setNovoDesejo({ ...novoDesejo, nome: v })}
+                placeholder="Ex: Notebook, viagem, curso..."
+              />
+              <MoneyInput
+                value={novoDesejo.valor}
+                onChange={(v) => setNovoDesejo({ ...novoDesejo, valor: v })}
+              />
+            </div>
+            <div className="flex gap-2 items-center">
+              <div className="flex gap-1.5">
+                {Object.entries(PRIORIDADES).map(([key, p]) => (
+                  <button
+                    key={key}
+                    onClick={() => setNovoDesejo({ ...novoDesejo, prioridade: key })}
+                    className="text-xs px-2.5 py-1.5 rounded-md font-medium transition-all"
+                    style={{
+                      backgroundColor: novoDesejo.prioridade === key ? p.color : 'transparent',
+                      color: novoDesejo.prioridade === key ? 'white' : p.color,
+                      border: `1px solid ${novoDesejo.prioridade === key ? p.color : t.border}`
+                    }}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={addDesejo}
+                className="ml-auto px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5"
+                style={{ backgroundColor: t.accent, color: 'white' }}
+              >
+                <Plus size={14} /> Adicionar
+              </button>
+            </div>
+          </div>
+        </Section>
+
+        {/* ===== HISTÓRICO ===== */}
+        {data.historico.length > 0 && (
+          <Section
+            icon={<History size={18} />}
+            title="Histórico mensal"
+            subtitle={`${data.historico.length} ${data.historico.length === 1 ? 'mês registrado' : 'meses registrados'}`}
+            action={
+              <button
+                onClick={() => setShowHistorico(!showHistorico)}
+                className="text-xs flex items-center gap-1 px-2.5 py-1 rounded-md"
+                style={{ color: t.textMuted, border: `1px solid ${t.border}` }}
+              >
+                {showHistorico ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                {showHistorico ? 'Ocultar' : 'Mostrar'}
+              </button>
+            }
+          >
+            {showHistorico && (
+              <div className="space-y-2">
+                {[...data.historico].reverse().map((h, i) => (
+                  <div key={i} className="p-3 rounded-lg" style={{ backgroundColor: t.surface, border: `1px solid ${t.border}` }}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-medium text-sm" style={{ color: t.text }}>{getMonthName(h.mes)}</span>
+                      <span className="serif num text-lg" style={{ color: t.ink }}>{formatBRL(h.receita)}</span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
+                      <MiniStat label="Contas" value={h.contas} color={t.amber} />
+                      <MiniStat label="Emergência" value={h.emergencia} color={t.positive} />
+                      <MiniStat label="Investido" value={h.investimento || 0} color="#5A8DBF" />
+                      <MiniStat label="Desejos" value={h.desejos} color={t.accent} />
+                      <MiniStat label="Sobra" value={h.sobra} color={h.sobra >= 0 ? t.positive : t.accent} highlight />
                     </div>
                   </div>
-                ))
-              )}
-            </div>
-          )}
-
-          {/* ABA DESEJOS */}
-          {activeTab === 'desejos' && (
-            <div className="card">
-              <h2>🎁 Lista de Desejos</h2>
-              
-              <div className="form-group">
-                <input type="text" id="nomeDesejo" placeholder="O que você deseja?" />
-                <select id="prioridadeDesejo" style={{marginTop: '10px'}}>
-                  <option value="alta">Alta</option>
-                  <option value="media">Média</option>
-                  <option value="baixa">Baixa</option>
-                </select>
-                <button onClick={() => {
-                  const nome = document.getElementById('nomeDesejo').value;
-                  const prio = document.getElementById('prioridadeDesejo').value;
-                  if (nome) {
-                    addDesejo(nome, prio);
-                    document.getElementById('nomeDesejo').value = '';
-                  }
-                }} style={{marginTop: '10px'}}>+ Adicionar Desejo</button>
+                ))}
               </div>
+            )}
+          </Section>
+        )}
 
-              {data.desejos.length === 0 ? (
-                <p style={{color: '#999', fontSize: '13px'}}>Nenhum desejo adicionado</p>
-              ) : (
-                data.desejos.map(desejo => (
-                  <div key={desejo.id} className="list-item">
-                    <div>
-                      <span>{desejo.nome}</span>
-                      <span className={`priority ${desejo.prioridade}`}>{desejo.prioridade}</span>
-                    </div>
-                    <button className="list-item-delete" onClick={() => deleteDesejo(desejo.id)}>✕</button>
-                  </div>
-                ))
-              )}
-            </div>
-          )}
+        <footer className="mt-12 pt-6 text-center text-xs" style={{ color: t.textSubtle, borderTop: `1px solid ${t.border}` }}>
+          Seus dados ficam salvos localmente. Ao virar o mês, os aportes são arquivados automaticamente.
+        </footer>
+      </div>
+    </div>
+  );
+}
 
-          {/* ABA CONFIGURAÇÕES */}
-          {activeTab === 'config' && (
-            <div className="card">
-              <h2>⚙️ Configurações</h2>
-              
-              <div className="form-group">
-                <label>Salário Base Mensal</label>
-                <input 
-                  type="number" 
-                  value={data.config.salario} 
-                  onChange={(e) => updateData({...data, config: {...data.config, salario: parseFloat(e.target.value)}})}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Comissão Estimada</label>
-                <input 
-                  type="number" 
-                  value={data.config.comissao} 
-                  onChange={(e) => updateData({...data, config: {...data.config, comissao: parseFloat(e.target.value)}})}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Meta de Renda Passiva (R$/mês)</label>
-                <input 
-                  type="number" 
-                  value={data.config.metaRendaPassiva} 
-                  onChange={(e) => updateData({...data, config: {...data.config, metaRendaPassiva: parseFloat(e.target.value)}})}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Meta Fundo Emergência</label>
-                <input 
-                  type="number" 
-                  value={data.emergencia.meta} 
-                  onChange={(e) => updateData({...data, emergencia: {...data.emergencia, meta: parseFloat(e.target.value)}})}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Aporte Mensal Mínimo (Emergência)</label>
-                <input 
-                  type="number" 
-                  value={data.emergencia.metaMensal} 
-                  onChange={(e) => updateData({...data, emergencia: {...data.emergencia, metaMensal: parseFloat(e.target.value)}})}
-                />
-              </div>
-
-              <div className="note">
-                ✅ Seus dados estão sendo sincronizados com Supabase
-              </div>
-            </div>
-          )}
+// ============ Sub-components ============
+function Section({ icon, title, subtitle, action, children }) {
+  return (
+    <section className="mb-6">
+      <div className="flex items-center justify-between mb-4 px-1">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: t.surface, border: `1px solid ${t.border}`, color: t.accent }}>
+            {icon}
+          </div>
+          <div>
+            <h2 className="serif text-xl font-medium" style={{ color: t.ink }}>{title}</h2>
+            <p className="text-xs num" style={{ color: t.textMuted }}>{subtitle}</p>
+          </div>
         </div>
-      );
-    }
+        {action}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function AllocationBar({ label, value, total, color, icon }) {
+  const pct = total > 0 ? (value / total) * 100 : 0;
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1.5">
+        <div className="flex items-center gap-2 opacity-80">
+          {icon}
+          <span>{label}</span>
+        </div>
+        <span className="num font-medium">{formatBRL(value)}</span>
+      </div>
+      <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}>
+        <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, pct)}%`, backgroundColor: color }} />
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({ text }) {
+  return (
+    <div className="text-center py-6 text-sm rounded-xl" style={{ color: t.textMuted, backgroundColor: t.surfaceAlt, border: `1px dashed ${t.border}` }}>
+      {text}
+    </div>
+  );
+}
+
+function MiniStat({ label, value, color, highlight }) {
+  return (
+    <div className="p-2 rounded" style={{ backgroundColor: highlight ? t.surfaceAlt : 'transparent', border: highlight ? `1px solid ${t.border}` : 'none' }}>
+      <div className="text-[10px] uppercase tracking-wider font-medium mb-0.5" style={{ color: t.textMuted }}>{label}</div>
+      <div className="num text-sm font-medium" style={{ color }}>{formatBRL(value)}</div>
+    </div>
+  );
+}
+
+function AporteCard({ lista, total, metaMinima, inputValue, setInputValue, onAdd, onRemove, accentColor }) {
+  const metaBatida = metaMinima > 0 && total >= metaMinima;
+  const pct = metaMinima > 0 ? Math.min(100, (total / metaMinima) * 100) : (total > 0 ? 100 : 0);
+  const extra = metaMinima > 0 ? Math.max(0, total - metaMinima) : 0;
+  return (
+    <div className="p-4 rounded-xl" style={{ backgroundColor: t.surfaceAlt, border: `1px solid ${t.border}` }}>
+      <div className="flex items-baseline justify-between mb-1">
+        <span className="text-xs uppercase tracking-wider font-medium" style={{ color: t.textMuted }}>Aportes deste mês</span>
+        {metaMinima > 0 && (
+          <span className="text-[11px] num font-medium" style={{ color: metaBatida ? t.positive : t.textMuted }}>
+            {metaBatida ? '✓ meta mínima' : `mínimo ${formatBRL(metaMinima)}`}
+          </span>
+        )}
+      </div>
+      <div className="serif num text-2xl font-medium mb-2" style={{ color: total > 0 ? accentColor : t.textSubtle }}>
+        {formatBRL(total)}
+        {extra > 0 && (
+          <span className="text-xs font-normal ml-2" style={{ color: t.positive }}>
+            +{formatBRL(extra)} além do mínimo
+          </span>
+        )}
+      </div>
+      {metaMinima > 0 && (
+        <div className="h-1.5 rounded-full overflow-hidden mb-3" style={{ backgroundColor: t.border }}>
+          <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: metaBatida ? t.positive : accentColor }} />
+        </div>
+      )}
+
+      {lista.length > 0 && (
+        <div className="space-y-1.5 mb-3">
+          {lista.map((a, i) => (
+            <div key={a.id} className="flex items-center justify-between text-sm px-3 py-2 rounded-lg" style={{ backgroundColor: t.surface, border: `1px solid ${t.border}` }}>
+              <span style={{ color: t.textMuted }}>{a.label || `Aporte ${i + 1}`}</span>
+              <div className="flex items-center gap-2">
+                <span className="num font-medium" style={{ color: t.text }}>{formatBRL(a.valor)}</span>
+                <button onClick={() => onRemove(a.id)} className="p-0.5 rounded transition-colors" style={{ color: t.textSubtle }} title="Remover">
+                  <X size={14} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="flex gap-2 items-center">
+        <MoneyInput
+          value={inputValue}
+          onChange={setInputValue}
+          placeholder={metaMinima ? metaMinima.toString().replace('.', ',') : '0,00'}
+          onKeyDown={(e) => e.key === 'Enter' && onAdd()}
+        />
+        <button onClick={onAdd} className="px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-1" style={{ backgroundColor: accentColor, color: 'white' }}>
+          <Plus size={15} /> Aportar
+        </button>
+      </div>
+      <p className="text-[11px] mt-2" style={{ color: t.textSubtle }}>
+        Adicione quantos aportes quiser no mês — cada um soma ao total. No fim do mês tudo é arquivado de uma vez.
+      </p>
+    </div>
+  );
+}
 
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
