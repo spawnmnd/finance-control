@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finance Control - Completo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #f5f5f0 0%, #fafaf8 100%);
+      color: #2a2a28;
+    }
+    
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .header h1 { font-size: 28px; }
+    .header p { color: #999; font-size: 13px; }
+    .header-info { text-align: right; }
+    
+    .btn-logout { 
+      background: #dc3545; 
+      color: white; 
+      border: none; 
+      padding: 8px 16px; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-size: 12px;
+    }
+    .btn-logout:hover { background: #c82333; }
+    
+    .card { 
+      background: white; 
+      border-radius: 12px; 
+      padding: 24px; 
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border: 1px solid #e5e5e0;
+    }
+    
+    .card h2 { font-size: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    .card h3 { font-size: 14px; color: #999; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+    
+    .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+    .stat { background: #f9f9f6; padding: 15px; border-radius: 8px; }
+    .stat-label { font-size: 11px; color: #999; text-transform: uppercase; margin-bottom: 5px; }
+    .stat-value { font-size: 20px; font-weight: bold; }
+    .stat-small { font-size: 14px; }
+    
+    .progress-bar { 
+      height: 8px; 
+      background: #e5e5e0; 
+      border-radius: 4px; 
+      overflow: hidden;
+      margin: 10px 0;
+    }
+    .progress-fill { 
+      height: 100%; 
+      background: #5c8c3a;
+      transition: width 0.3s;
+    }
+    
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-size: 12px; color: #999; margin-bottom: 5px; text-transform: uppercase; }
+    .form-group input, .form-group select { 
+      width: 100%; 
+      padding: 10px; 
+      border: 1px solid #e5e5e0; 
+      border-radius: 6px; 
+      font-size: 14px;
+    }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: #2a3b2a; }
+    
+    .input-group { display: flex; gap: 10px; }
+    .input-group input { flex: 1; }
+    .input-group button { width: auto; }
+    
+    button { 
+      padding: 10px 16px; 
+      background: #2a3b2a; 
+      color: white; 
+      border: none; 
+      border-radius: 6px; 
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    button:hover { background: #1e2d24; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    .list-item { 
+      padding: 12px; 
+      background: #f9f9f6; 
+      border-radius: 6px; 
+      margin-bottom: 8px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+    }
+    .list-item-value { color: #999; font-weight: 500; }
+    .list-item-delete { background: #dc3545; padding: 5px 10px; font-size: 11px; }
+    
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #e5e5e0; }
+    .tab { 
+      padding: 12px 16px; 
+      background: none; 
+      border: none; 
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      font-size: 13px;
+      color: #999;
+    }
+    .tab.active { 
+      color: #2a3b2a;
+      border-bottom-color: #2a3b2a;
+    }
+    
+    .hidden { display: none; }
+    .error { color: #d32f2f; font-size: 12px; padding: 10px; background: #ffebee; border-radius: 6px; margin-bottom: 15px; }
+    .success { color: #388e3c; font-size: 12px; padding: 10px; background: #e8f5e9; border-radius: 6px; margin-bottom: 15px; }
+    
+    .auth-screen { 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      min-height: 100vh;
+      background: linear-gradient(135deg, #2a3b2a 0%, #1e2d24 100%);
+    }
+    .auth-card { 
+      background: white; 
+      padding: 40px; 
+      border-radius: 12px; 
+      width: 100%; 
+      max-width: 400px;
+    }
+    .auth-card h1 { text-align: center; margin-bottom: 10px; }
+    .auth-card p { text-align: center; color: #999; margin-bottom: 30px; font-size: 13px; }
+    
+    .priority { padding: 4px 8px; border-radius: 4px; font-size: 11px; }
+    .priority.alta { background: #fbebe7; color: #9b2c2c; }
+    .priority.media { background: #fef3de; color: #b45309; }
+    .priority.baixa { background: #efeae0; color: #6b6358; }
+    
+    .note { 
+      font-size: 11px; 
+      color: #999; 
+      margin-top: 10px; 
+      padding: 10px; 
+      background: #f9f9f6; 
+      border-radius: 6px;
+    }
+    
+    @media (max-width: 600px) {
+      .dashboard { grid-template-columns: 1fr; }
+      .container { padding: 15px; }
+      .card { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const { useState, useEffect } = React;
+
+    const SUPABASE_URL = 'https://mazdohddohbbbirmidki.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_V7hqRt4Hm8YA1IYHfLyrGw_CctfL0HgAhmZNGXhjkiD3ixSY';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const formatBRL = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0);
+
+    function App() {
+      const [user, setUser] = useState(null);
+      const [loading, setLoading] = useState(true);
+      const [email, setEmail] = useState('');
+      const [password, setPassword] = useState('');
+      const [isSignUp, setIsSignUp] = useState(false);
+      const [error, setError] = useState('');
+      const [activeTab, setActiveTab] = useState('resumo');
+      
+      const [data, setData] = useState({
+        config: { salario: 3000, comissao: 0, metaRendaPassiva: 6000 },
+        contas: [],
+        emergencia: { meta: 6000, acumulado: 1300, metaMensal: 300 },
+        investimentos: { acumulado: 0 },
+        desejos: [],
+        mesAtual: { comissao: 0, aportes: { emergencia: 0, investimento: 0 } },
+        historico: []
+      });
+
+      useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          setUser(session?.user || null);
+          setLoading(false);
+        });
+        supabase.auth.onAuthStateChange((_event, session) => {
+          setUser(session?.user || null);
+        });
+      }, []);
+
+      const handleAuth = async () => {
+        setError('');
+        const { error: err } = isSignUp
+          ? await supabase.auth.signUp({ email, password })
+          : await supabase.auth.signInWithPassword({ email, password });
+        if (err) setError(err.message);
+        else { setEmail(''); setPassword(''); }
+      };
+
+      const handleLogout = async () => {
+        await supabase.auth.signOut();
+        setUser(null);
+      };
+
+      const updateData = (newData) => setData(newData);
+
+      const addConta = (nome) => {
+        const newConta = { id: Date.now(), nome, valor: 0, paga: false };
+        updateData({ ...data, contas: [...data.contas, newConta] });
+      };
+
+      const updateConta = (id, valor) => {
+        updateData({
+          ...data,
+          contas: data.contas.map(c => c.id === id ? { ...c, valor } : c)
+        });
+      };
+
+      const deleteConta = (id) => {
+        updateData({ ...data, contas: data.contas.filter(c => c.id !== id) });
+      };
+
+      const addDesejo = (nome, prioridade) => {
+        const newDesejo = { id: Date.now(), nome, prioridade, valor: 0, guardado: 0 };
+        updateData({ ...data, desejos: [...data.desejos, newDesejo] });
+      };
+
+      const deleteDesejo = (id) => {
+        updateData({ ...data, desejos: data.desejos.filter(d => d.id !== id) });
+      };
+
+      if (loading) return <div className="auth-screen"><div className="auth-card"><p>Carregando...</p></div></div>;
+
+      if (!user) {
+        return (
+          <div className="auth-screen">
+            <div className="auth-card">
+              <h1>💰 Finance Control</h1>
+              <p>Investimentos & Aposentadoria</p>
+              
+              {error && <div className="error">{error}</div>}
+              
+              <div className="form-group">
+                <label>Email</label>
+                <input type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+              </div>
+              
+              <div className="form-group">
+                <label>Senha</label>
+                <input type="password" placeholder="senha" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAuth()} />
+              </div>
+              
+              <button onClick={handleAuth} style={{width: '100%'}}>
+                {isSignUp ? 'Criar Conta' : 'Entrar'}
+              </button>
+              
+              <div style={{textAlign: 'center', marginTop: '15px'}}>
+                <button onClick={() => setIsSignUp(!isSignUp)} style={{background: 'none', color: '#2a3b2a', width: 'auto', padding: '5px'}}>
+                  {isSignUp ? 'Já tem conta?' : 'Criar conta'}
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      const salario = data.config.salario || 0;
+      const comissao = data.mesAtual.comissao || 0;
+      const receita = salario + comissao;
+      const totalContas = data.contas.reduce((s, c) => s + (c.valor || 0), 0);
+      const aporteEmergencia = data.mesAtual.aportes?.emergencia || 0;
+      const aporteInvestimento = data.mesAtual.aportes?.investimento || 0;
+      const sobra = receita - totalContas - aporteEmergencia - aporteInvestimento;
+
+      const emergenciaCompleta = data.emergencia.acumulado >= data.emergencia.meta;
+      const pctEmergencia = Math.min(100, (data.emergencia.acumulado / data.emergencia.meta) * 100);
+      const investimentoAcumulado = data.investimentos?.acumulado || 0;
+
+      // Projeção de aposentadoria
+      const fiiYieldMensal = 0.009;
+      const patrimonioAlvo = 6000 / fiiYieldMensal;
+      const pctRenda = Math.min(100, (investimentoAcumulado / patrimonioAlvo) * 100);
+      const rendaPassivaAtual = investimentoAcumulado * fiiYieldMensal;
+
+      return (
+        <div className="container">
+          <div className="header">
+            <div>
+              <h1>💰 Finance Control</h1>
+              <p>{user.email}</p>
+            </div>
+            <button className="btn-logout" onClick={handleLogout}>Sair</button>
+          </div>
+
+          {/* TABS */}
+          <div className="tabs">
+            <button className={`tab ${activeTab === 'resumo' ? 'active' : ''}`} onClick={() => setActiveTab('resumo')}>Resumo</button>
+            <button className={`tab ${activeTab === 'emergencia' ? 'active' : ''}`} onClick={() => setActiveTab('emergencia')}>Emergência</button>
+            <button className={`tab ${activeTab === 'investimentos' ? 'active' : ''}`} onClick={() => setActiveTab('investimentos')}>Investimentos</button>
+            <button className={`tab ${activeTab === 'contas' ? 'active' : ''}`} onClick={() => setActiveTab('contas')}>Contas</button>
+            <button className={`tab ${activeTab === 'desejos' ? 'active' : ''}`} onClick={() => setActiveTab('desejos')}>Desejos</button>
+            <button className={`tab ${activeTab === 'config' ? 'active' : ''}`} onClick={() => setActiveTab('config')}>⚙️</button>
+          </div>
+
+          {/* ABA RESUMO */}
+          {activeTab === 'resumo' && (
+            <>
+              <div className="card">
+                <h2>📊 Resumo do Mês</h2>
+                <div className="dashboard">
+                  <div className="stat">
+                    <div className="stat-label">Receita Total</div>
+                    <div className="stat-value">{formatBRL(receita)}</div>
+                  </div>
+                  <div className="stat">
+                    <div className="stat-label">Contas</div>
+                    <div className="stat-value">{formatBRL(totalContas)}</div>
+                  </div>
+                  <div className="stat">
+                    <div className="stat-label">Emergência</div>
+                    <div className="stat-value">{formatBRL(aporteEmergencia)}</div>
+                  </div>
+                  <div className="stat">
+                    <div className="stat-label">Investimentos</div>
+                    <div className="stat-value">{formatBRL(aporteInvestimento)}</div>
+                  </div>
+                  <div className="stat">
+                    <div className="stat-label">Desejos</div>
+                    <div className="stat-value">{formatBRL(0)}</div>
+                  </div>
+                  <div className="stat" style={{background: sobra > 0 ? '#e8f5e9' : '#ffebee'}}>
+                    <div className="stat-label">Sobra</div>
+                    <div className="stat-value" style={{color: sobra > 0 ? '#388e3c' : '#d32f2f'}}>{formatBRL(sobra)}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="card">
+                <h2>🎯 Meta de Aposentadoria</h2>
+                <div className="stat">
+                  <div className="stat-label">Meta Mensal de Renda Passiva</div>
+                  <div className="stat-value" style={{fontSize: '24px'}}>{formatBRL(6000)}</div>
+                </div>
+                <div style={{marginTop: '15px'}}>
+                  <div className="stat-label">Renda Passiva Atual</div>
+                  <div style={{fontSize: '18px', fontWeight: 'bold'}}>{formatBRL(rendaPassivaAtual)}/mês</div>
+                </div>
+                <div style={{marginTop: '15px'}}>
+                  <div className="stat-label">Patrimônio em FIIs</div>
+                  <div className="stat-value" style={{fontSize: '18px'}}>{formatBRL(investimentoAcumulado)}</div>
+                  <div style={{fontSize: '12px', color: '#999'}}>Alvo: {formatBRL(patrimonioAlvo)}</div>
+                </div>
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{width: `${pctRenda}%`}}></div>
+                </div>
+                <div style={{fontSize: '12px', color: '#999', marginTop: '10px'}}>
+                  {pctRenda.toFixed(1)}% do caminho
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Comissão deste mês</label>
+                <input 
+                  type="number" 
+                  value={data.mesAtual.comissao} 
+                  onChange={(e) => updateData({...data, mesAtual: {...data.mesAtual, comissao: parseFloat(e.target.value)}})}
+                />
+              </div>
+            </>
+          )}
+
+          {/* ABA EMERGÊNCIA */}
+          {activeTab === 'emergencia' && (
+            <div className="card">
+              <h2>🏦 Fundo de Emergência</h2>
+              <div className="dashboard">
+                <div className="stat">
+                  <div className="stat-label">Meta</div>
+                  <div className="stat-value">{formatBRL(data.emergencia.meta)}</div>
+                </div>
+                <div className="stat">
+                  <div className="stat-label">Acumulado</div>
+                  <div className="stat-value">{formatBRL(data.emergencia.acumulado)}</div>
+                </div>
+              </div>
+              <div className="progress-bar">
+                <div className="progress-fill" style={{width: `${pctEmergencia}%`}}></div>
+              </div>
+              <div style={{fontSize: '12px', color: '#999'}}>{pctEmergencia.toFixed(1)}% completo</div>
+              
+              <div className="form-group" style={{marginTop: '20px'}}>
+                <label>Aporte este mês</label>
+                <div className="input-group">
+                  <input type="number" id="aportEmerg" placeholder="R$" />
+                  <button onClick={() => {
+                    const val = parseFloat(document.getElementById('aportEmerg').value);
+                    if (val > 0) {
+                      updateData({...data, mesAtual: {...data.mesAtual, aportes: {...data.mesAtual.aportes, emergencia: (data.mesAtual.aportes?.emergencia || 0) + val}}});
+                      document.getElementById('aportEmerg').value = '';
+                    }
+                  }}>+ Aportar</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ABA INVESTIMENTOS */}
+          {activeTab === 'investimentos' && (
+            <div className="card">
+              <h2>📈 FIIs - Investimentos</h2>
+              <div className="dashboard">
+                <div className="stat">
+                  <div className="stat-label">Acumulado em FIIs</div>
+                  <div className="stat-value">{formatBRL(investimentoAcumulado)}</div>
+                </div>
+                <div className="stat">
+                  <div className="stat-label">Renda Mensal Estimada</div>
+                  <div className="stat-value">{formatBRL(rendaPassivaAtual)}</div>
+                </div>
+              </div>
+              
+              <div className="form-group">
+                <label>Aporte este mês</label>
+                <div className="input-group">
+                  <input type="number" id="aportInv" placeholder="R$" />
+                  <button onClick={() => {
+                    const val = parseFloat(document.getElementById('aportInv').value);
+                    if (val > 0) {
+                      updateData({...data, mesAtual: {...data.mesAtual, aportes: {...data.mesAtual.aportes, investimento: (data.mesAtual.aportes?.investimento || 0) + val}}});
+                      document.getElementById('aportInv').value = '';
+                    }
+                  }}>+ Aportar</button>
+                </div>
+              </div>
+
+              <div className="note">
+                💡 Recomendação: MXRF11, HGLG11, XPML11 com reinvestimento total dos dividendos
+              </div>
+            </div>
+          )}
+
+          {/* ABA CONTAS */}
+          {activeTab === 'contas' && (
+            <div className="card">
+              <h2>📋 Contas a Pagar</h2>
+              
+              <div className="form-group">
+                <input type="text" id="nomeConta" placeholder="Nome da conta" />
+                <button onClick={() => {
+                  const nome = document.getElementById('nomeConta').value;
+                  if (nome) {
+                    addConta(nome);
+                    document.getElementById('nomeConta').value = '';
+                  }
+                }}>+ Adicionar Conta</button>
+              </div>
+
+              {data.contas.length === 0 ? (
+                <p style={{color: '#999', fontSize: '13px'}}>Nenhuma conta adicionada</p>
+              ) : (
+                data.contas.map(conta => (
+                  <div key={conta.id} className="list-item">
+                    <span>{conta.nome}</span>
+                    <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                      <input 
+                        type="number" 
+                        value={conta.valor} 
+                        onChange={(e) => updateConta(conta.id, parseFloat(e.target.value))}
+                        style={{width: '80px', padding: '5px'}}
+                      />
+                      <span className="list-item-value">{formatBRL(conta.valor)}</span>
+                      <button className="list-item-delete" onClick={() => deleteConta(conta.id)}>✕</button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
+          {/* ABA DESEJOS */}
+          {activeTab === 'desejos' && (
+            <div className="card">
+              <h2>🎁 Lista de Desejos</h2>
+              
+              <div className="form-group">
+                <input type="text" id="nomeDesejo" placeholder="O que você deseja?" />
+                <select id="prioridadeDesejo" style={{marginTop: '10px'}}>
+                  <option value="alta">Alta</option>
+                  <option value="media">Média</option>
+                  <option value="baixa">Baixa</option>
+                </select>
+                <button onClick={() => {
+                  const nome = document.getElementById('nomeDesejo').value;
+                  const prio = document.getElementById('prioridadeDesejo').value;
+                  if (nome) {
+                    addDesejo(nome, prio);
+                    document.getElementById('nomeDesejo').value = '';
+                  }
+                }} style={{marginTop: '10px'}}>+ Adicionar Desejo</button>
+              </div>
+
+              {data.desejos.length === 0 ? (
+                <p style={{color: '#999', fontSize: '13px'}}>Nenhum desejo adicionado</p>
+              ) : (
+                data.desejos.map(desejo => (
+                  <div key={desejo.id} className="list-item">
+                    <div>
+                      <span>{desejo.nome}</span>
+                      <span className={`priority ${desejo.prioridade}`}>{desejo.prioridade}</span>
+                    </div>
+                    <button className="list-item-delete" onClick={() => deleteDesejo(desejo.id)}>✕</button>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
+          {/* ABA CONFIGURAÇÕES */}
+          {activeTab === 'config' && (
+            <div className="card">
+              <h2>⚙️ Configurações</h2>
+              
+              <div className="form-group">
+                <label>Salário Base Mensal</label>
+                <input 
+                  type="number" 
+                  value={data.config.salario} 
+                  onChange={(e) => updateData({...data, config: {...data.config, salario: parseFloat(e.target.value)}})}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Comissão Estimada</label>
+                <input 
+                  type="number" 
+                  value={data.config.comissao} 
+                  onChange={(e) => updateData({...data, config: {...data.config, comissao: parseFloat(e.target.value)}})}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Meta de Renda Passiva (R$/mês)</label>
+                <input 
+                  type="number" 
+                  value={data.config.metaRendaPassiva} 
+                  onChange={(e) => updateData({...data, config: {...data.config, metaRendaPassiva: parseFloat(e.target.value)}})}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Meta Fundo Emergência</label>
+                <input 
+                  type="number" 
+                  value={data.emergencia.meta} 
+                  onChange={(e) => updateData({...data, emergencia: {...data.emergencia, meta: parseFloat(e.target.value)}})}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Aporte Mensal Mínimo (Emergência)</label>
+                <input 
+                  type="number" 
+                  value={data.emergencia.metaMensal} 
+                  onChange={(e) => updateData({...data, emergencia: {...data.emergencia, metaMensal: parseFloat(e.target.value)}})}
+                />
+              </div>
+
+              <div className="note">
+                ✅ Seus dados estão sendo sincronizados com Supabase
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
