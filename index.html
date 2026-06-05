@@ -52,6 +52,8 @@
     const Trophy = (p) => <IC {...p} d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/>;
     const Target = (p) => <IC {...p} d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12zM12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>;
     const LogOut = (p) => <IC {...p} d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>;
+    const Eye = (p) => <IC {...p} d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" d2="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>;
+    const EyeOff = (p) => <IC {...p} d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/>;
 
     // ====== AUTH WRAPPER ======
     function App() {
@@ -288,6 +290,9 @@ function PercentInput({ value, onChange, placeholder, onKeyDown }) {
 function FinanceControlApp({ userId, userEmail, onLogout }) {
   const [data, setData] = useState(defaultData);
   const [loading, setLoading] = useState(true);
+  const [ocultarValores, setOcultarValores] = useState(false);
+  const fv = (val) => ocultarValores ? '••••••' : formatBRL(val);
+  window._ocultarValores = ocultarValores;
   const [showConfig, setShowConfig] = useState(false);
   const [showHistorico, setShowHistorico] = useState(false);
   const [editingComissao, setEditingComissao] = useState(false);
@@ -788,10 +793,18 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
               <button onClick={onLogout} className="p-2 rounded-full transition-colors" style={{ color: t.textMuted }} title={`Sair (${userEmail})`}>
                 <LogOut size={18} />
               </button>
+              <button
+                onClick={() => setOcultarValores(!ocultarValores)}
+                className="p-2 rounded-full transition-colors"
+                style={{ color: ocultarValores ? t.accent : t.textMuted, backgroundColor: ocultarValores ? t.accentLight : 'transparent' }}
+                title={ocultarValores ? 'Mostrar valores' : 'Ocultar valores'}
+              >
+                {ocultarValores ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
           </div>
           <p className="text-sm" style={{ color: t.textMuted }}>
-            Faixa salarial estimada: <span className="num" style={{ color: t.text }}>{formatBRL(receitaMinima)}</span> – <span className="num" style={{ color: t.text }}>{formatBRL(receitaMaxima)}</span>
+            Faixa salarial estimada: <span className="num" style={{ color: t.text }}>{fv(receitaMinima)}</span> – <span className="num" style={{ color: t.text }}>{fv(receitaMaxima)}</span>
           </p>
         </header>
 
@@ -872,10 +885,10 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
               <span className="text-xs uppercase tracking-widest font-medium">Renda do mês</span>
             </div>
             <div className="flex items-baseline gap-3 mb-1">
-              <span className="serif num text-5xl md:text-6xl font-medium tracking-tight">{formatBRL(receitaTotal)}</span>
+              <span className="serif num text-5xl md:text-6xl font-medium tracking-tight">{fv(receitaTotal)}</span>
             </div>
             <div className="text-sm opacity-60 mb-6 num">
-              {formatBRL(salarioBase)} base + {formatBRL(comissaoAtual)} comissão
+              {fv(salarioBase)} base + {fv(comissaoAtual)} comissão
             </div>
 
             {/* Comissão input */}
@@ -922,7 +935,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
                   </button>
                 </div>
               ) : (
-                <div className="num text-2xl font-medium">{formatBRL(comissaoAtual)}</div>
+                <div className="num text-2xl font-medium">{fv(comissaoAtual)}</div>
               )}
             </div>
 
@@ -940,13 +953,13 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
               <div className="pt-3 mt-3 border-t flex items-baseline justify-between" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>
                 <span className="text-sm opacity-80">Sobra livre</span>
                 <span className="serif num text-2xl font-medium" style={{ color: sobra >= 0 ? '#B8D49E' : '#E89A8F' }}>
-                  {formatBRL(sobra)}
+                  {fv(sobra)}
                 </span>
               </div>
               {sobra < 0 && (
                 <div className="flex items-start gap-2 p-3 rounded-lg text-xs" style={{ backgroundColor: 'rgba(232,154,143,0.15)' }}>
                   <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
-                  <span>Você ultrapassou sua renda em {formatBRL(Math.abs(sobra))}. Reduza algum aporte ou conta para equilibrar o mês.</span>
+                  <span>Você ultrapassou sua renda em {fv(Math.abs(sobra))}. Reduza algum aporte ou conta para equilibrar o mês.</span>
                 </div>
               )}
             </div>
@@ -963,7 +976,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
             </div>
 
             <div className="flex items-baseline gap-2 mb-1">
-              <span className="serif num text-4xl md:text-5xl font-medium tracking-tight">{formatBRL(metaRendaPassiva)}</span>
+              <span className="serif num text-4xl md:text-5xl font-medium tracking-tight">{fv(metaRendaPassiva)}</span>
               <span className="text-lg opacity-70">/mês</span>
             </div>
             <div className="text-sm opacity-60 mb-5">de renda passiva com dividendos de FIIs</div>
@@ -1000,23 +1013,23 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
                   </div>
                   <div className="flex justify-between text-[11px] opacity-60 num">
                     <span>{pctRendaPassiva.toFixed(2)}% do caminho</span>
-                    <span>alvo: {formatBRL(patrimonioAlvoRenda)} em FIIs</span>
+                    <span>alvo: {fv(patrimonioAlvoRenda)} em FIIs</span>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
                     <div className="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">Renda passiva hoje</div>
-                    <div className="num font-medium">{formatBRL(rendaPassivaAtual)}/mês</div>
+                    <div className="num font-medium">{fv(rendaPassivaAtual)}/mês</div>
                   </div>
                   <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
                     <div className="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">Aporte mensal</div>
-                    <div className="num font-medium">{formatBRL(aporteInvestMensal)}/mês</div>
+                    <div className="num font-medium">{fv(aporteInvestMensal)}/mês</div>
                   </div>
                 </div>
 
                 <p className="text-[11px] opacity-50 mt-3 leading-relaxed">
-                  Baseado em aportes de {formatBRL(aporteInvestMensal)}/mês em FIIs a {fiiYieldMensal.toString().replace('.', ',')}% a.m. com reinvestimento total dos dividendos. Seu fundo de emergência rende em paralelo e não afeta esse cálculo. Atualiza a cada novo aporte — aumentar o aporte mensal reduz bastante o prazo.
+                  Baseado em aportes de {fv(aporteInvestMensal)}/mês em FIIs a {fiiYieldMensal.toString().replace('.', ',')}% a.m. com reinvestimento total dos dividendos. Seu fundo de emergência rende em paralelo e não afeta esse cálculo. Atualiza a cada novo aporte — aumentar o aporte mensal reduz bastante o prazo.
                 </p>
               </>
             )}
@@ -1027,7 +1040,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
         <Section
           icon={<Receipt size={18} />}
           title="Contas a pagar"
-          subtitle={`${data.contas.filter(c => data.mesAtual.contasPagas.includes(c.id)).length} de ${data.contas.length} pagas · ${formatBRL(totalContas)} no total`}
+          subtitle={`${data.contas.filter(c => data.mesAtual.contasPagas.includes(c.id)).length} de ${data.contas.length} pagas · ${fv(totalContas)} no total`}
         >
           <div className="space-y-2 mb-4">
             {data.contas.length === 0 && (
@@ -1125,7 +1138,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
           icon={<PiggyBank size={18} />}
           title="Fundo de emergência"
           subtitle={data.emergencia.meta > 0
-            ? `${formatBRL(data.emergencia.acumulado)} de ${formatBRL(data.emergencia.meta)} acumulados`
+            ? `${fv(data.emergencia.acumulado)} de ${fv(data.emergencia.meta)} acumulados`
             : 'Defina uma meta para começar a acompanhar'}
           action={
             <button
@@ -1178,7 +1191,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
                   </div>
                   <div className="flex justify-between text-xs num" style={{ color: t.textMuted }}>
                     <span>{pctEmergencia.toFixed(1)}% concluído</span>
-                    <span>{emergenciaCompleta ? 'Meta atingida ✓' : `Faltam ${formatBRL(Math.max(0, data.emergencia.meta - data.emergencia.acumulado))}`}</span>
+                    <span>{emergenciaCompleta ? 'Meta atingida ✓' : `Faltam ${fv(Math.max(0, data.emergencia.meta - data.emergencia.acumulado))}`}</span>
                   </div>
                 </div>
               )}
@@ -1197,7 +1210,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
                         Próximo mês (bruto)
                       </div>
                       <div className="serif num text-xl font-medium" style={{ color: t.amber }}>
-                        +{formatBRL(rendimentoProxMes)}
+                        +{fv(rendimentoProxMes)}
                       </div>
                     </div>
                     <div>
@@ -1205,7 +1218,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
                         Saldo em 12 meses*
                       </div>
                       <div className="serif num text-xl font-medium" style={{ color: t.text }}>
-                        {formatBRL(saldoEmergencia12m)}
+                        {fv(saldoEmergencia12m)}
                       </div>
                     </div>
                   </div>
@@ -1222,7 +1235,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
                     <span className="serif text-lg font-medium">Reserva concluída!</span>
                   </div>
                   <p className="text-xs" style={{ color: t.textMuted }}>
-                    Agora seus <span className="num font-medium" style={{ color: t.text }}>{formatBRL(data.emergencia.metaMensal)}</span> mensais
+                    Agora seus <span className="num font-medium" style={{ color: t.text }}>{fv(data.emergencia.metaMensal)}</span> mensais
                     passam a ir para investimentos — veja a seção abaixo. ↓
                   </p>
                 </div>
@@ -1232,7 +1245,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
                     <div className="p-3 rounded-lg mb-4 text-xs flex items-start gap-2" style={{ backgroundColor: t.surfaceAlt, color: t.textMuted }}>
                       <TrendingUp size={14} className="flex-shrink-0 mt-0.5" style={{ color: t.amber }} />
                       <span>
-                        Aportando <span className="num font-medium" style={{ color: t.text }}>{formatBRL(data.emergencia.metaMensal)}</span>/mês
+                        Aportando <span className="num font-medium" style={{ color: t.text }}>{fv(data.emergencia.metaMensal)}</span>/mês
                         e considerando o rendimento da Caixinha, sua meta será atingida em ~<span className="num font-medium" style={{ color: t.text }}>
                           {isFinite(mesesAteMeta) ? mesesAteMeta : '∞'}
                         </span> {mesesAteMeta === 1 ? 'mês' : 'meses'}.
@@ -1261,7 +1274,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
           <Section
             icon={<LineChart size={18} />}
             title="Investimentos"
-            subtitle={`${formatBRL(investimentoAcumulado)} acumulados · FIIs com reinvestimento de dividendos`}
+            subtitle={`${fv(investimentoAcumulado)} acumulados · FIIs com reinvestimento de dividendos`}
           >
             <div className="p-4 rounded-xl mb-4" style={{ backgroundColor: '#EFF4F9', border: `1px solid #C7D8E8` }}>
               <div className="flex items-start gap-2 text-xs" style={{ color: t.textMuted }}>
@@ -1280,9 +1293,9 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
                   <Coins size={12} />
                   <span className="text-[10px] uppercase tracking-widest font-semibold">Renda passiva atual</span>
                 </div>
-                <div className="serif num text-3xl font-medium mb-1">{formatBRL(rendaMensalFII)}/mês</div>
+                <div className="serif num text-3xl font-medium mb-1">{fv(rendaMensalFII)}/mês</div>
                 <div className="text-[11px] opacity-60">
-                  Dividendos estimados sobre {formatBRL(investimentoAcumulado)} investidos a {fiiYieldMensal.toString().replace('.', ',')}% a.m. (isentos de IR)
+                  Dividendos estimados sobre {fv(investimentoAcumulado)} investidos a {fiiYieldMensal.toString().replace('.', ',')}% a.m. (isentos de IR)
                 </div>
               </div>
             )}
@@ -1296,7 +1309,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
                 </span>
               </div>
               <p className="text-[11px] mb-3" style={{ color: t.textSubtle }}>
-                Aportando {formatBRL(aporteInvestMensal)}/mês e reinvestindo todos os dividendos:
+                Aportando {fv(aporteInvestMensal)}/mês e reinvestindo todos os dividendos:
               </p>
               <div className="space-y-1.5">
                 <div className="grid grid-cols-[60px,1fr,1fr] gap-2 text-[10px] uppercase tracking-wider font-semibold pb-1.5" style={{ color: t.textMuted, borderBottom: `1px solid ${t.border}` }}>
@@ -1307,8 +1320,8 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
                 {projecoes.map((p) => (
                   <div key={p.label} className="grid grid-cols-[60px,1fr,1fr] gap-2 py-1.5 items-center" style={{ borderBottom: `1px solid ${t.border}33` }}>
                     <div className="text-sm font-medium" style={{ color: t.text }}>{p.label}</div>
-                    <div className="num text-sm text-right" style={{ color: t.text }}>{formatBRL(p.patrimonio)}</div>
-                    <div className="num text-sm text-right font-medium" style={{ color: '#5A8DBF' }}>{formatBRL(p.renda)}/mês</div>
+                    <div className="num text-sm text-right" style={{ color: t.text }}>{fv(p.patrimonio)}</div>
+                    <div className="num text-sm text-right font-medium" style={{ color: '#5A8DBF' }}>{fv(p.renda)}/mês</div>
                   </div>
                 ))}
               </div>
@@ -1335,7 +1348,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
           icon={<Heart size={18} />}
           title="Lista de desejos"
           subtitle={data.desejos.length > 0
-            ? `${data.desejos.length} ${data.desejos.length === 1 ? 'item' : 'itens'} · ${formatBRL(data.desejos.reduce((s, d) => s + d.valor, 0))} no total`
+            ? `${data.desejos.length} ${data.desejos.length === 1 ? 'item' : 'itens'} · ${fv(data.desejos.reduce((s, d) => s + d.valor, 0))} no total`
             : 'Coisas que você quer comprar nos próximos meses'}
         >
           <div className="space-y-3 mb-4">
@@ -1372,7 +1385,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
                           </span>
                         </div>
                         <div className="text-xs num" style={{ color: t.textMuted }}>
-                          {formatBRL(totalGuardado)} de {formatBRL(desejo.valor)}
+                          {fv(totalGuardado)} de {fv(desejo.valor)}
                         </div>
                       </div>
                       <div className="flex gap-1">
@@ -1428,7 +1441,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
                     )}
                     {aporteAtual > 0 && !completo && (
                       <div className="text-xs mt-2 num" style={{ color: t.positive }}>
-                        ✓ {formatBRL(aporteAtual)} alocados este mês
+                        ✓ {fv(aporteAtual)} alocados este mês
                       </div>
                     )}
                   </div>
@@ -1503,7 +1516,7 @@ function FinanceControlApp({ userId, userEmail, onLogout }) {
                   <div key={i} className="p-3 rounded-lg" style={{ backgroundColor: t.surface, border: `1px solid ${t.border}` }}>
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium text-sm" style={{ color: t.text }}>{getMonthName(h.mes)}</span>
-                      <span className="serif num text-lg" style={{ color: t.ink }}>{formatBRL(h.receita)}</span>
+                      <span className="serif num text-lg" style={{ color: t.ink }}>{fv(h.receita)}</span>
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
                       <MiniStat label="Contas" value={h.contas} color={t.amber} />
@@ -1557,7 +1570,7 @@ function AllocationBar({ label, value, total, color, icon }) {
           {icon}
           <span>{label}</span>
         </div>
-        <span className="num font-medium">{formatBRL(value)}</span>
+        <span className="num font-medium">{window._ocultarValores ? "••••••" : formatBRL(value)}</span>
       </div>
       <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}>
         <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, pct)}%`, backgroundColor: color }} />
@@ -1578,7 +1591,7 @@ function MiniStat({ label, value, color, highlight }) {
   return (
     <div className="p-2 rounded" style={{ backgroundColor: highlight ? t.surfaceAlt : 'transparent', border: highlight ? `1px solid ${t.border}` : 'none' }}>
       <div className="text-[10px] uppercase tracking-wider font-medium mb-0.5" style={{ color: t.textMuted }}>{label}</div>
-      <div className="num text-sm font-medium" style={{ color }}>{formatBRL(value)}</div>
+      <div className="num text-sm font-medium" style={{ color }}>{window._ocultarValores ? "••••••" : formatBRL(value)}</div>
     </div>
   );
 }
@@ -1593,15 +1606,15 @@ function AporteCard({ lista, total, metaMinima, inputValue, setInputValue, onAdd
         <span className="text-xs uppercase tracking-wider font-medium" style={{ color: t.textMuted }}>Aportes deste mês</span>
         {metaMinima > 0 && (
           <span className="text-[11px] num font-medium" style={{ color: metaBatida ? t.positive : t.textMuted }}>
-            {metaBatida ? '✓ meta mínima' : `mínimo ${formatBRL(metaMinima)}`}
+            {metaBatida ? '✓ meta mínima' : `mínimo ${window._ocultarValores ? "••••••" : formatBRL(metaMinima)}`}
           </span>
         )}
       </div>
       <div className="serif num text-2xl font-medium mb-2" style={{ color: total > 0 ? accentColor : t.textSubtle }}>
-        {formatBRL(total)}
+        {window._ocultarValores ? "••••••" : formatBRL(total)}
         {extra > 0 && (
           <span className="text-xs font-normal ml-2" style={{ color: t.positive }}>
-            +{formatBRL(extra)} além do mínimo
+            +{window._ocultarValores ? "••••••" : formatBRL(extra)} além do mínimo
           </span>
         )}
       </div>
@@ -1617,7 +1630,7 @@ function AporteCard({ lista, total, metaMinima, inputValue, setInputValue, onAdd
             <div key={a.id} className="flex items-center justify-between text-sm px-3 py-2 rounded-lg" style={{ backgroundColor: t.surface, border: `1px solid ${t.border}` }}>
               <span style={{ color: t.textMuted }}>{a.label || `Aporte ${i + 1}`}</span>
               <div className="flex items-center gap-2">
-                <span className="num font-medium" style={{ color: t.text }}>{formatBRL(a.valor)}</span>
+                <span className="num font-medium" style={{ color: t.text }}>{window._ocultarValores ? "••••••" : formatBRL(a.valor)}</span>
                 <button onClick={() => onRemove(a.id)} className="p-0.5 rounded transition-colors" style={{ color: t.textSubtle }} title="Remover">
                   <X size={14} />
                 </button>
